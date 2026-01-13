@@ -71,7 +71,8 @@
         {
           "title": "ImageNet Classification with Deep Convolutional Neural Networks",
           "year": 2012,
-          "publication": "NeurIPS"
+          "publication": "NeurIPS",
+          "example" :"aaa"
         }
       ]
     }
