@@ -6,7 +6,7 @@ import os  # # 📁 Gestion des chemins/dossiers
 import re  # # 🔎 Regex pour extraire les versions/dates
 import json  # # 🧾 Export JSON
 import time  # # ⏱️ Politesse (sleep 1.5–2s)
-import random  # # 🎲 Jitter pour éviter un rythme trop “robot”
+import random  # # 🎲 Jitter permet d'éviter un rythme trop “robot”
 import datetime  # # 🕒 Timestamp ISO pour logs + fichiers
 from typing import Dict, Any, List, Optional, Tuple  # # 🧩 Typage pour clarté
 import requests  # # 🌐 Requêtes HTTP
@@ -231,3 +231,29 @@ def scrape_arxiv_cs(  # # 🚀 Fonction appelée par l’endpoint FastAPI
 
     result["saved_to"] = out_path  # # 📌 On renvoie aussi où on a sauvegardé
     return result  # # 📤 Retour final
+
+#--
+# ============================================================
+# ▶️ Point d’entrée du script (exécution directe)
+# ============================================================
+
+if __name__ == "__main__":
+
+    # 🔎 Exemple de requête de test (simule un appel backend)
+    query = "multimodal transformer"      # # Mots-clés de recherche
+    category = "cs.AI"                     # # Catégorie arXiv
+    max_results = 5                        # # Limite volontaire pour test
+
+    print("🚀 Lancement du scraping arXiv...")
+    print(f"🔎 Requête : {query} | Catégorie : {category}")
+
+    # 🧠 Appel de la fonction principale de scraping
+    results = scrape_arxiv(
+        query=query,
+        category=category,
+        max_results=max_results
+    )
+
+    # 👀 Affichage du résultat dans le terminal
+    print(f"✅ {len(results)} articles récupérés")
+    print(json.dumps(results[:1], indent=2, ensure_ascii=False))  # # aperçu 1 article
