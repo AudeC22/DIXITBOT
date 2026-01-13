@@ -1,7 +1,7 @@
 {
   "ok": true,
   "query": "multimodal transformer",
-  "sort": "submitted_date",
+  "sort": "relevance",
   "count": 5,
   "max_results": 5,
   "hit_limit_100": false,
@@ -26,32 +26,31 @@
       "abs_url": "",
       "pdf_url": "",
       "doi": "",
-      "license": "",
-      "subjects": "",
-      "comments": "",
-      "journal_ref": "",
       "versions": [],
-      "last_updated_date": "",
+      "last_updated_raw": "",
+      "html_url": "",
+      "published_date": "",
       "content_text": "",
-      "refs_text": "",
-      "html_unavailable": true,
-      "fallback_urls": [
-        "https://arxiv.org/abs/"
+      "references": [],
+      "references_dois": [],
+      "fallback_urls": [],
+      "errors": [
+        "missing_abs_url"
       ],
       "missing_fields": [
         "arxiv_id",
         "abs_url",
         "pdf_url",
         "doi",
-        "license",
-        "subjects",
-        "comments",
-        "journal_ref",
         "versions",
-        "last_updated_date",
+        "last_updated_raw",
+        "html_url",
+        "published_date",
         "content_text",
-        "refs_text"
-      ]
+        "references",
+        "references_dois"
+      ],
+      "url_hint_if_missing": "Champs manquants: arxiv_id, abs_url, pdf_url, doi, versions, last_updated_raw, html_url, published_date, content_text, references, references_dois. Tu peux vérifier ici: abs= | html= | pdf="
     },
     {
       "arxiv_id": "",
@@ -67,32 +66,31 @@
       "abs_url": "",
       "pdf_url": "",
       "doi": "",
-      "license": "",
-      "subjects": "",
-      "comments": "",
-      "journal_ref": "",
       "versions": [],
-      "last_updated_date": "",
+      "last_updated_raw": "",
+      "html_url": "",
+      "published_date": "",
       "content_text": "",
-      "refs_text": "",
-      "html_unavailable": true,
-      "fallback_urls": [
-        "https://arxiv.org/abs/"
+      "references": [],
+      "references_dois": [],
+      "fallback_urls": [],
+      "errors": [
+        "missing_abs_url"
       ],
       "missing_fields": [
         "arxiv_id",
         "abs_url",
         "pdf_url",
         "doi",
-        "license",
-        "subjects",
-        "comments",
-        "journal_ref",
         "versions",
-        "last_updated_date",
+        "last_updated_raw",
+        "html_url",
+        "published_date",
         "content_text",
-        "refs_text"
-      ]
+        "references",
+        "references_dois"
+      ],
+      "url_hint_if_missing": "Champs manquants: arxiv_id, abs_url, pdf_url, doi, versions, last_updated_raw, html_url, published_date, content_text, references, references_dois. Tu peux vérifier ici: abs= | html= | pdf="
     },
     {
       "arxiv_id": "",
@@ -107,32 +105,31 @@
       "abs_url": "",
       "pdf_url": "",
       "doi": "",
-      "license": "",
-      "subjects": "",
-      "comments": "",
-      "journal_ref": "",
       "versions": [],
-      "last_updated_date": "",
+      "last_updated_raw": "",
+      "html_url": "",
+      "published_date": "",
       "content_text": "",
-      "refs_text": "",
-      "html_unavailable": true,
-      "fallback_urls": [
-        "https://arxiv.org/abs/"
+      "references": [],
+      "references_dois": [],
+      "fallback_urls": [],
+      "errors": [
+        "missing_abs_url"
       ],
       "missing_fields": [
         "arxiv_id",
         "abs_url",
         "pdf_url",
         "doi",
-        "license",
-        "subjects",
-        "comments",
-        "journal_ref",
         "versions",
-        "last_updated_date",
+        "last_updated_raw",
+        "html_url",
+        "published_date",
         "content_text",
-        "refs_text"
-      ]
+        "references",
+        "references_dois"
+      ],
+      "url_hint_if_missing": "Champs manquants: arxiv_id, abs_url, pdf_url, doi, versions, last_updated_raw, html_url, published_date, content_text, references, references_dois. Tu peux vérifier ici: abs= | html= | pdf="
     },
     {
       "arxiv_id": "",
@@ -152,32 +149,31 @@
       "abs_url": "",
       "pdf_url": "",
       "doi": "",
-      "license": "",
-      "subjects": "",
-      "comments": "",
-      "journal_ref": "",
       "versions": [],
-      "last_updated_date": "",
+      "last_updated_raw": "",
+      "html_url": "",
+      "published_date": "",
       "content_text": "",
-      "refs_text": "",
-      "html_unavailable": true,
-      "fallback_urls": [
-        "https://arxiv.org/abs/"
+      "references": [],
+      "references_dois": [],
+      "fallback_urls": [],
+      "errors": [
+        "missing_abs_url"
       ],
       "missing_fields": [
         "arxiv_id",
         "abs_url",
         "pdf_url",
         "doi",
-        "license",
-        "subjects",
-        "comments",
-        "journal_ref",
         "versions",
-        "last_updated_date",
+        "last_updated_raw",
+        "html_url",
+        "published_date",
         "content_text",
-        "refs_text"
-      ]
+        "references",
+        "references_dois"
+      ],
+      "url_hint_if_missing": "Champs manquants: arxiv_id, abs_url, pdf_url, doi, versions, last_updated_raw, html_url, published_date, content_text, references, references_dois. Tu peux vérifier ici: abs= | html= | pdf="
     },
     {
       "arxiv_id": "",
@@ -194,33 +190,49 @@
       "abs_url": "",
       "pdf_url": "",
       "doi": "",
-      "license": "",
-      "subjects": "",
-      "comments": "",
-      "journal_ref": "",
       "versions": [],
-      "last_updated_date": "",
+      "last_updated_raw": "",
+      "html_url": "",
+      "published_date": "",
       "content_text": "",
-      "refs_text": "",
-      "html_unavailable": true,
-      "fallback_urls": [
-        "https://arxiv.org/abs/"
+      "references": [],
+      "references_dois": [],
+      "fallback_urls": [],
+      "errors": [
+        "missing_abs_url"
       ],
       "missing_fields": [
         "arxiv_id",
         "abs_url",
         "pdf_url",
         "doi",
-        "license",
-        "subjects",
-        "comments",
-        "journal_ref",
         "versions",
-        "last_updated_date",
+        "last_updated_raw",
+        "html_url",
+        "published_date",
         "content_text",
-        "refs_text"
-      ]
+        "references",
+        "references_dois"
+      ],
+      "url_hint_if_missing": "Champs manquants: arxiv_id, abs_url, pdf_url, doi, versions, last_updated_raw, html_url, published_date, content_text, references, references_dois. Tu peux vérifier ici: abs= | html= | pdf="
     }
   ],
-  "bundle_html_file": "data_lake\\raw\\arxiv_bundle_20260113_150659.html"
+  "bundle_html_file": "data_lake\\raw\\arxiv_bundle_20260113_163930.html",
+  "supported_fields": [
+    "arxiv_id",
+    "title",
+    "authors",
+    "abstract",
+    "submitted_date",
+    "abs_url",
+    "pdf_url",
+    "doi",
+    "versions",
+    "last_updated_raw",
+    "html_url",
+    "published_date",
+    "content_text",
+    "references",
+    "references_dois"
+  ]
 }
