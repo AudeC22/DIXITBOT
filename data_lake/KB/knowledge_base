@@ -1,0 +1,145 @@
+{
+  "domain": "Computer Science",
+  "description": "Base de connaissances fixe utilisée par l’agent pour expliquer des concepts fondamentaux, soutenir une interaction conversationnelle et décider quand des outils externes sont nécessaires.",
+  "scope": "Prototype académique – assistant conversationnel de recherche",
+  "target_users": [
+    "étudiants",
+    "débutants en recherche",
+    "utilisateurs non experts"
+  ],
+
+  "agent_persona": {
+    "name": "Dixit",
+    "role": "Assistant conversationnel de recherche en informatique",
+    "tone": "pédagogique, clair et accessible",
+    "behavior": [
+      "explique les concepts de manière simple",
+      "reformule les questions imprécises",
+      "guide l’utilisateur vers des sujets de recherche",
+      "reconnaît ses limites"
+    ]
+  },
+
+  "capabilities": [
+    "expliquer des concepts fondamentaux en informatique et en IA",
+    "soutenir des échanges conversationnels pédagogiques",
+    "aider à formuler et préciser des questions de recherche",
+    "décider si une question nécessite l’utilisation d’outils externes"
+  ],
+
+  "small_talk": {
+    "objectifs": [
+      "accueillir l’utilisateur",
+      "clarifier l’intention de la question",
+      "expliquer le rôle et le fonctionnement de l’agent",
+      "orienter la conversation vers des sujets académiques pertinents"
+    ],
+    "sujets_autorises": [
+      "salutations",
+      "présentation de l’agent",
+      "explication de son fonctionnement",
+      "aide à la formulation des questions"
+    ],
+    "sujets_interdits": [
+      "opinions personnelles",
+      "soutien émotionnel",
+      "bavardage non académique"
+    ],
+    "intentions_exemples": [
+      "bonjour",
+      "qui es-tu",
+      "que peux-tu faire",
+      "comment poser une bonne question"
+    ]
+  },
+
+  "foundational_concepts": [
+    {
+      "name": "Base de connaissances (Knowledge Base)",
+      "definition": "Une base de connaissances est un ensemble structuré d’informations qu’un système d’intelligence artificielle utilise pour raisonner, expliquer des concepts et répondre à des questions.",
+      "objectifs": [
+        "stocker des connaissances stables",
+        "soutenir le raisonnement et l’explication",
+        "réduire la dépendance aux données en temps réel"
+      ]
+    },
+    {
+      "name": "Agent intelligent",
+      "definition": "Un agent intelligent est un système capable de percevoir son environnement, de raisonner à partir des informations disponibles et d’agir pour atteindre un objectif donné.",
+      "objectifs": [
+        "analyser les questions de l’utilisateur",
+        "choisir entre connaissances internes et outils externes",
+        "produire des réponses contextualisées"
+      ]
+    },
+    {
+      "name": "Modèle de langage de grande taille (LLM)",
+      "definition": "Un modèle de langage de grande taille est un modèle d’apprentissage automatique entraîné sur de vastes corpus textuels afin de comprendre et générer du langage naturel.",
+      "objectifs": [
+        "générer des réponses en langage naturel",
+        "reformuler et expliquer des informations",
+        "soutenir l’interaction conversationnelle"
+      ]
+    },
+    {
+      "name": "Data Lake",
+      "definition": "Un data lake est un système de stockage permettant de conserver des données à différents niveaux de traitement, depuis les données brutes jusqu’aux données structurées.",
+      "objectifs": [
+        "stocker des données hétérogènes",
+        "séparer données brutes et données traitées",
+        "faciliter l’évolution et l’enrichissement des données"
+      ]
+    },
+    {
+      "name": "Web scraping",
+      "definition": "Le web scraping est une technique permettant d’extraire automatiquement des informations à partir de pages web publiques.",
+      "objectifs": [
+        "récupérer des données récentes ou manquantes",
+        "compléter les connaissances existantes",
+        "accéder à des sources d’information externes"
+      ]
+    }
+  ],
+
+  "subdomains": [
+    {
+      "name": "Intelligence Artificielle",
+      "description": "Étude des systèmes capables d’exécuter des tâches nécessitant habituellement l’intelligence humaine.",
+      "themes_cles": [
+        "agents intelligents",
+        "raisonnement",
+        "planification",
+        "prise de décision"
+      ]
+    },
+    {
+      "name": "Machine Learning",
+      "description": "Domaine qui permet aux systèmes d’apprendre automatiquement des modèles à partir de données.",
+      "themes_cles": [
+        "apprentissage supervisé",
+        "apprentissage non supervisé",
+        "réseaux de neurones",
+        "deep learning"
+      ]
+    },
+    {
+      "name": "Traitement du langage naturel",
+      "description": "Techniques permettant aux ordinateurs de comprendre et de produire du langage humain.",
+      "themes_cles": [
+        "modèles de langage",
+        "compréhension de texte",
+        "extraction d’information"
+      ]
+    },
+    {
+      "name": "Vision par ordinateur",
+      "description": "Méthodes permettant aux machines d’interpréter des images et des vidéos.",
+      "themes_cles": [
+        "reconnaissance d’images",
+        "détection d’objets",
+        "représentations visuelles"
+      ]
+    }
+  ]
+}
+
