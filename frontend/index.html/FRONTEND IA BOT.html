@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dixit — Agent d’accès à la recherche</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="brand">
+      <h1>Dixit</h1>
+      <p>Agent intelligent d’accès à la recherche (LLM local + données ouvertes)</p>
+    </div>
+
+    <div class="badges">
+      <span class="badge">Étudiants</span>
+      <span class="badge">Chercheurs</span>
+      <span class="badge">Sources ouvertes (HAL / arXiv)</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- Colonne gauche : vitrine / aide -->
+    <section class="card">
+      <h2>Comment l’utiliser</h2>
+      <ol>
+        <li>Pose une question de recherche (ex: “Thèses sur l’IA et la santé”).</li>
+        <li>Dixit cherche d’abord dans sa base de connaissances (KB).</li>
+        <li>Si nécessaire, il déclenche des outils (scraping éthique) pour trouver des sources.</li>
+        <li>Tu reçois une réponse structurée avec citations.</li>
+      </ol>
+      <p class="muted">
+        Objectif : transformer une requête complexe en résultats exploitables.
+      </p>
+    </section>
+
+    <!-- Colonne droite : chat + résultats -->
+    <section class="card chat">
+      <div class="chat-top">
+        <div>
+          <h2>Assistant de recherche</h2>
+          <p class="muted" id="status">Backend : en attente…</p>
+        </div>
+
+        <button id="clearBtn" class="ghost" type="button">Effacer</button>
+      </div>
+
+      <!-- Zone messages -->
+      <div id="messages" class="messages" aria-live="polite"></div>
+
+      <!-- Formulaire chat -->
+      <form id="chatForm" class="composer">
+        <input
+          id="input"
+          type="text"
+          placeholder="Ex: Articles récents sur Qwen2.5 et la recherche académique…"
+          autocomplete="off"
+          required
+        />
+        <button id="sendBtn" type="submit">Envoyer</button>
+      </form>
+
+      <!-- Zone “sources” (prête pour plus tard) -->
+      <div class="sources">
+        <h3>Sources / Références</h3>
+        <div id="sourcesList" class="sources-list">
+          <p class="muted">Aucune source affichée pour le moment.</p>
+        </div>
+      </div>
+
+      <p class="hint">
+        API attendue : <code>POST http://localhost:8000/chat</code>
+      </p>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
+

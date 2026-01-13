@@ -1,0 +1,122 @@
+:root { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+body { margin: 0; background: #f6f7fb; color: #111; }
+
+.header {
+  background: white;
+  border-bottom: 1px solid #e8e8ef;
+  padding: 20px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.brand h1 { margin: 0; }
+.brand p { margin: 6px 0 0; color: #555; }
+
+.badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.badge {
+  font-size: 12px;
+  padding: 6px 10px;
+  border: 1px solid #e8e8ef;
+  border-radius: 999px;
+  background: #fafafa;
+}
+
+.layout {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 980px) {
+  .layout { grid-template-columns: 380px 1fr; align-items: start; }
+}
+
+.card {
+  background: white;
+  border: 1px solid #e8e8ef;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.muted { color: #666; }
+.hint { margin-top: 12px; color: #555; font-size: 14px; }
+code { background: #f0f0f0; padding: 2px 6px; border-radius: 6px; }
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+}
+
+.chat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.ghost {
+  background: transparent;
+  border: 1px solid #e8e8ef;
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.messages {
+  flex: 1;
+  overflow: auto;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px 0;
+}
+
+.msg {
+  max-width: 85%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin: 8px 0;
+  white-space: pre-wrap;
+  line-height: 1.35;
+}
+
+.user { margin-left: auto; background: #e7f1ff; border: 1px solid #cfe3ff; }
+.bot  { margin-right: auto; background: #fff; border: 1px solid #e6e6e6; }
+
+.composer { display: flex; gap: 8px; }
+.composer input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+.composer button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+}
+.composer button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.sources {
+  margin-top: 12px;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+.sources h3 { margin: 0 0 8px; }
+.sources-list { display: grid; gap: 8px; }
+.source-item {
+  border: 1px solid #e8e8ef;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fafafa;
+}
+.source-title { font-weight: 600; margin: 0 0 4px; }
+.source-meta { margin: 0; color: #666; font-size: 13px; }
