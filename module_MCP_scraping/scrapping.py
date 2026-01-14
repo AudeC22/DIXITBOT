@@ -500,7 +500,7 @@ def scrape_arxiv_cs(  # # 🚀 Fonction principale
 
     # =====================  # # 💾 3) Sauvegarde bundle + JSON
     bundle_html = "\n".join(bundle_parts)  # # 🧾 Concat bundle
-    bundle_name = f"arxiv_bundle_{ts}.html"  # # 🧾 Nom bundle
+    bundle_name = f"scrappingresults_arxiv_bundle_{ts}.html"  # # 🧾 Nom bundle
     bundle_path = save_text_file(data_lake_raw_dir, bundle_name, bundle_html)  # # 💾 Save bundle
 
     result: Dict[str, Any] = {  # # 🧾 JSON final
@@ -516,7 +516,7 @@ def scrape_arxiv_cs(  # # 🚀 Fonction principale
         "supported_fields": SUPPORTED_FIELDS,  # # ✅
     }  # # ✅
 
-    json_name = f"arxiv_raw_{ts}.json"  # # 🧾 Nom JSON
+    json_name = f"scrappingresults_arxiv_raw_{ts}.json"  # # 🧾 Nom JSON
     json_path = os.path.join(data_lake_raw_dir, json_name)  # # 📁 Chemin JSON
     with open(json_path, "w", encoding="utf-8") as f:  # # ✍️
         json.dump(result, f, ensure_ascii=False, indent=2)  # # 🧾 Écrire JSON
