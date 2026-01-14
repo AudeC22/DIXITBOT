@@ -38,7 +38,7 @@ SUPPORTED_FIELDS = [  # # ✅ Liste de champs (pour missing_fields)
     "html_url",  # # 🌐 URL HTML experimental (depuis /abs OU construit)
     "published_date",  # # 🗓️ Date watermark sur /html (ex: 28 Nov 2025)
     "license",  # # 🪪 Licence affichée sur /html (ex: arXiv.org perpetual non-exclusive license)
-    "sections",  # # 🧱 Titres + contenus (comme ton Excel)
+    "sections",  # # 🧱 Titres + contenus (comme dans le resultat de research elements page Excel)
     "content_text",  # # 🧾 Texte global concaténé (fallback)
     "references",  # # 📚 Références (raw + liens)
     "references_dois",  # # 🔗 Liste DOI trouvés dans les références
