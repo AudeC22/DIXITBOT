@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dixit — Recherche en Informatique</title>
+
+  <!-- 🔗 On relie le CSS (design) -->
+  <link rel="stylesheet" href="./test.css" />
+</head>
+
+<body>
+  <!-- ✅ 1) HEADER : style "Academia-like" -->
+  <header class="topbar">
+    <div class="topbar__inner">
+
+      <!-- Logo / Nom -->
+      <a class="logo" href="#">
+        <span class="logo__mark">D</span>
+        <span class="logo__text">Dixit</span>
+      </a>
+
+      <!-- Barre de recherche du SITE (filtre des sous-thèmes, pas le chatbot) -->
+      <div class="search">
+        <span class="search__icon">⌕</span>
+        <input id="siteSearch" class="search__input"
+               type="search"
+               placeholder="Rechercher un sous-thème (IA, réseaux, cybersécurité…)" />
+      </div>
+
+      <!-- Boutons à droite -->
+      <nav class="topbar__actions">
+        <button class="btn btn--ghost" type="button">Connexion</button>
+        <button class="btn btn--primary" type="button">Inscription</button>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- ✅ 2) MAIN : 2 colonnes (contenu + chatbot) -->
+  <main class="page">
+
+    <!-- Colonne gauche : la page “Informatique” -->
+    <section class="content">
+
+      <!-- Fil d’ariane -->
+      <div class="breadcrumb">
+        <a href="#" class="breadcrumb__link">Tous les sujets</a>
+        <span class="breadcrumb__sep">›</span>
+        <span class="breadcrumb__current">Informatique</span>
+      </div>
+
+      <!-- Bloc sujet -->
+      <div class="topic">
+        <div class="topic__header">
+          <div>
+            <h1 class="topic__title">Informatique</h1>
+
+            <div class="topic__meta">
+              <span class="pill">Publications : ~5M</span>
+              <span class="pill">Abonnés : ~6,4M</span>
+              <span class="pill pill--soft">Sources ouvertes : HAL / arXiv</span>
+            </div>
+          </div>
+
+          <button class="btn btn--primary" type="button">+ Suivre</button>
+        </div>
+
+        <!-- Description -->
+        <div class="topic__about">
+          <div class="about__icon">💡</div>
+          <div>
+            <h2 class="about__title">À propos de ce sujet</h2>
+            <p class="about__text">
+              L’informatique couvre les algorithmes, les structures de données, l’IA,
+              les réseaux, la cybersécurité et les systèmes.
+              Dixit aide à trouver, synthétiser et citer des sources fiables.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ Sous-thèmes (cartes) -->
+      <section class="section">
+        <h2 class="section__title">Sous-thèmes</h2>
+        <p class="section__subtitle">Filtrables via la barre de recherche en haut.</p>
+
+        <div id="subtopicsGrid" class="grid">
+          <article class="card" data-name="Algorithmes et structures de données">
+            <div>
+              <h3 class="card__title">Algorithmes & structures de données</h3>
+              <p class="card__meta">945 sous-thèmes</p>
+            </div>
+            <button class="btn btn--chip" type="button">+ Suivre</button>
+          </article>
+
+          <article class="card" data-name="Intelligence artificielle">
+            <div>
+              <h3 class="card__title">Intelligence artificielle</h3>
+              <p class="card__meta">754 sous-thèmes</p>
+            </div>
+            <button class="btn btn--chip" type="button">+ Suivre</button>
+          </article>
+
+          <article class="card" data-name="Réseaux informatiques">
+            <div>
+              <h3 class="card__title">Réseaux informatiques</h3>
+              <p class="card__meta">1359 sous-thèmes</p>
+            </div>
+            <button class="btn btn--chip" type="button">+ Suivre</button>
+          </article>
+
+          <article class="card" data-name="Cybersécurité">
+            <div>
+              <h3 class="card__title">Cybersécurité</h3>
+              <p class="card__meta">410 sous-thèmes</p>
+            </div>
+            <button class="btn btn--chip" type="button">+ Suivre</button>
+          </article>
+        </div>
+      </section>
+
+      <!-- Footer simple -->
+      <footer class="footer">
+        <div class="footer__bottom">
+          <span>© 2026 Dixit — Prototype pédagogique (sources ouvertes uniquement)</span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ✅ Colonne droite : LE CHATBOT (ne parle qu'au backend) -->
+    <aside class="assistant">
+      <div class="assistant__card">
+
+        <div class="assistant__head">
+          <div>
+            <h2 class="assistant__title">Assistant de recherche</h2>
+            <p id="status" class="assistant__status">Backend : en attente…</p>
+          </div>
+          <button id="clearBtn" class="btn btn--ghost" type="button">Effacer</button>
+        </div>
+
+        <!-- Messages chat -->
+        <div id="messages" class="messages"></div>
+
+        <!-- Formulaire -->
+        <form id="chatForm" class="composer">
+          <input id="input" type="text" placeholder="Ex : articles sur les LLMs et l’alignement…" required />
+          <button id="sendBtn" class="btn btn--primary" type="submit">Envoyer</button>
+        </form>
+
+        <!-- Sources -->
+        <div class="sources">
+          <h3>Sources / Références</h3>
+          <div id="sourcesList" class="sources__list">
+            <p class="muted">Aucune source affichée pour le moment.</p>
+          </div>
+        </div>
+
+        <p class="assistant__hint">API : <code>POST http://localhost:8000/chat</code></p>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- 🔗 On relie le JS -->
+  <script src="./assets/js/app.js"></script>
+</body>
+</html>
