@@ -534,7 +534,7 @@ def scrape_arxiv_cs(  # # Fonction principale
 # TEST LOCAL (1 ligne ON/OFF)  # # 
 # ============================================================  # # 
 
-RUN_LOCAL_TEST = True  # # True = test ON | False = test OFF
+RUN_LOCAL_TEST = False  # # True = test ON | False = test OFF
 
 if __name__ == "__main__" and RUN_LOCAL_TEST:  # # Execution directe
     print("Lancement du scraping arXiv (test local)...")  # # Log
