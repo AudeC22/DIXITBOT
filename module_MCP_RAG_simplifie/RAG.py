@@ -1,11 +1,11 @@
-# ============================================================  # # 📌 Séparateur visuel (lisibilité)
+# ============================================================  
 # 📚 Documentation Navigator (RAG simplifié)                     # # 🎯 Objectif : chercher un extrait de doc (local) par "sens"
 # ✅ TF-IDF + cosine similarity (scikit-learn)                   # # 🧠 Recherche sémantique simplifiée, sans base vectorielle
-# ============================================================  # # 📌 Séparateur visuel (lisibilité)
+# ============================================================  
 
 # ==============================  # # 📌 Début imports
 # 📚 Importation des bibliothèques  # # 🧠 Modules nécessaires au moteur de recherche
-# ==============================  # # 📌 Séparateur
+# ==============================  
 
 from typing import List, Dict, Any, Optional, Tuple  # # 🧩 Typage : rend le code plus clair et robuste
 import re  # # 🔎 Regex : pour nettoyer la requête (optionnel mais utile)
@@ -13,9 +13,9 @@ import re  # # 🔎 Regex : pour nettoyer la requête (optionnel mais utile)
 from sklearn.feature_extraction.text import TfidfVectorizer  # # 🧠 TF-IDF : transforme texte -> vecteurs
 from sklearn.metrics.pairwise import cosine_similarity  # # 📐 Similarité cosinus : mesure proximité entre vecteurs
 
-# ==============================  # # 📌 Séparateur
+# ==============================  
 # 🧱 Base documentaire locale (mini dataset)  # # ✅ Simule une doc type PyTorch / Scikit-learn
-# ==============================  # # 📌 Séparateur
+# ==============================  
 
 DOCS_DB: List[Dict[str, Any]] = [  # # 📦 Liste de dictionnaires : “base de données” simple
     {  # # 🧾 Entrée 1 (PyTorch)
@@ -60,9 +60,9 @@ DOCS_DB: List[Dict[str, Any]] = [  # # 📦 Liste de dictionnaires : “base de 
     },
 ]  # # ✅ Fin dataset
 
-# ==============================  # # 📌 Séparateur
+# ==============================   
 # 🧼 Utilitaires (nettoyage + normalisation)  # # 🎯 Améliore un peu la robustesse
-# ==============================  # # 📌 Séparateur
+# ==============================   
 
 def _normalize_text(text: str) -> str:  # # 🧼 Nettoie une chaîne pour stabiliser la recherche
     text = text or ""  # # ✅ Évite None : si text est None -> ""
@@ -81,9 +81,9 @@ def _build_corpus(docs: List[Dict[str, Any]]) -> List[str]:  # # 🧠 Construit 
         corpus.append(merged)  # # ➕ Ajoute au corpus
     return corpus  # # 📤 Renvoie corpus texte
 
-# ==============================  # # 📌 Séparateur
+# ==============================   
 # 🧠 Moteur “RAG simplifié” : TF-IDF + cosine similarity  # # 🎯 Trouver l'extrait le plus pertinent
-# ==============================  # # 📌 Séparateur
+# ==============================   
 
 def lookup_docs(query: str, library: Optional[str] = None) -> Dict[str, Any]:  # # 🚀 Fonction principale demandée
     query_norm = _normalize_text(query)  # # 🧼 Normalise la requête utilisateur
@@ -141,9 +141,9 @@ def lookup_docs(query: str, library: Optional[str] = None) -> Dict[str, Any]:  #
         "confidence": round(confidence, 4),  # # 📈 Score arrondi pour lisibilité
     }  # # ✅ Fin retour
 
-# ==============================  # # 📌 Séparateur
+# ==============================   
 # 🧪 Test local (désactivable en 1 ligne)  # # ✅ Permet de tester immédiatement
-# ==============================  # # 📌 Séparateur
+# ==============================   
 
 RUN_LOCAL_TEST = True  # # ✅ Mets True pour tester | mets False pour couper (attention: False avec F majuscule)
 

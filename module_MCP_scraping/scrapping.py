@@ -2,7 +2,7 @@
 # 🕷️ arXiv Scraper (CS search -> /abs -> /html) -> 1 HTML bundle + 1 JSON  # # 🎯 Objectif
 # ✅ Extraction: search results + /abs (doi, versions, html link) + /html (date, licence, sections, refs)  # # ✅
 # ✅ Sortie: JSON (items enrichis) + 1 fichier HTML "bundle" (debug) dans data_lake/raw  # # ✅
-# ============================================================  # # 📌 Séparateur visuel
+# ============================================================    visuel
 
 # ===============================  # # 🧩 Importations
 import os  # # 📁 Gestion des chemins/dossiers
@@ -44,9 +44,9 @@ SUPPORTED_FIELDS = [  # # ✅ Liste de champs (pour missing_fields)
     "references_dois",  # # 🔗 Liste DOI trouvés dans les références
 ]
 
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 # ✅ A) Helpers (dossiers, timestamps, “vide”, politesse, GET)
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 
 def ensure_dir(path: str) -> None:  # # 📁 Créer dossier si besoin
     os.makedirs(path, exist_ok=True)  # # ✅ Crée (sans erreur si existe)
@@ -111,9 +111,9 @@ def compute_missing_fields(item: Dict[str, Any]) -> List[str]:  # # 🚩 Calcule
             missing.append(f)  # # ➕ Ajouter
     return missing  # # 📤 Retourner liste
 
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 # 🔎 B) URL builder (tri compatible arXiv)
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 
 def build_search_url(query: str, start: int, size: int, sort: str) -> str:  # # 🔗 Construire URL search/cs
     q = requests.utils.quote(query)  # # 🔎 Encoder requête (espaces etc.)
@@ -124,9 +124,9 @@ def build_search_url(query: str, start: int, size: int, sort: str) -> str:  # # 
     # ⚠️ "relevance" est le défaut du site : PAS besoin de &order=-relevance (400)  # # 🚫
     return base  # # ✅ Relevance default
 
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 # 🧩 C) Parsing SEARCH page (liste résultats) — robuste
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 
 def find_abs_and_pdf_hrefs(li: Tag) -> Tuple[str, str]:  # # 🔎 Trouver href /abs et /pdf dans un item search
     abs_href = ""  # # 🔗 Href /abs
@@ -202,9 +202,9 @@ def parse_search_page(html: str) -> List[Dict[str, Any]]:  # # 🧩 HTML search 
 
     return items  # # 📤 Retour
 
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 # 📌 D) Parsing /abs (versions + doi + lien HTML experimental + abstract fallback)
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 
 def parse_abs_page(abs_html: str) -> Dict[str, Any]:  # # 🧩 /abs -> dict enrichissement
     soup = BeautifulSoup(abs_html, "lxml")  # # 🍲 Parser HTML
@@ -241,9 +241,9 @@ def parse_abs_page(abs_html: str) -> Dict[str, Any]:  # # 🧩 /abs -> dict enri
 
     return out  # # 📤
 
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 # 🌐 E) Parsing /html (date watermark + licence + sections + références)
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 
 def clean_text(s: str) -> str:  # # 🧼 Nettoyage texte simple
     if not s:  # # 🚫
@@ -372,9 +372,9 @@ def parse_html_page(html_text: str) -> Dict[str, Any]:  # # 🧩 /html -> dict
 
     return out  # # 📤
 
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 # 🚀 F) Fonction principale (1 HTML bundle + 1 JSON)
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 
 def scrape_arxiv_cs(  # # 🚀 Fonction principale
     query: str,  # # 🔎 Requête utilisateur
@@ -524,9 +524,9 @@ def scrape_arxiv_cs(  # # 🚀 Fonction principale
     result["saved_to"] = json_path  # # 📌 Ajouter chemin JSON
     return result  # # 📤 Retourner résultat
 
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 # 🧪 TEST LOCAL (1 ligne ON/OFF)
-# ============================================================  # # 📌 Séparateur
+# ============================================================   
 
 RUN_LOCAL_TEST = True  # # ✅ True = test ON | False = test OFF
 
