@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "user_query": "multimodal transformer misogyny detection",
+  "theme": "ai_ml",
+  "allowed_subcats": [
+    "cs.AI",
+    "cs.LG",
+    "cs.CV",
+    "cs.CL",
+    "cs.MA",
+    "cs.NE"
+  ],
+  "sort": "relevance",
+  "requested_max_results": 5,
+  "count_collected_cs": 1,
+  "count_after_theme_filter": 0,
+  "items": [],
+  "bundle_html_file": "c:\\Users\\audec\\Documents\\GitHub\\DIXITBOT\\data_lake\\raw\\cache\\scrape_arxiv_cs_bundle_20260114_194220.html",
+  "supported_fields": [
+    "arxiv_id",
+    "title",
+    "authors",
+    "abstract",
+    "submitted_date",
+    "abs_url",
+    "pdf_url",
+    "doi",
+    "versions",
+    "last_updated_raw",
+    "primary_category",
+    "all_categories",
+    "missing_fields",
+    "errors"
+  ],
+  "project_root": "c:\\Users\\audec\\Documents\\GitHub\\DIXITBOT",
+  "raw_cache_dir": "c:\\Users\\audec\\Documents\\GitHub\\DIXITBOT\\data_lake\\raw\\cache",
+  "cwd_runtime": "C:\\Users\\audec\\Documents\\GitHub\\DIXITBOT",
+  "last_search_url": "https://arxiv.org/search/cs?query=multimodal%20transformer%20misogyny%20detection&searchtype=all&abstracts=show&size=50&start=50",
+  "last_search_http": 500,
+  "parse_diag_last": {
+    "page_title": "Search | arXiv e-print repository",
+    "has_abs_links": true,
+    "selector_count_arxiv_result": 1
+  },
+  "anti_bot_or_weird_page": false
+}
