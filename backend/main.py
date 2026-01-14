@@ -18,14 +18,21 @@ from module_MCP_scraping.scrapping import scrape_arxiv_cs  # # ✅ Import correc
 app = FastAPI()  # # 🧠 API
 
 #==============================================
-# 1) Endpoint existant : Scrape arXiv
+# 0) Healthcheck (optionnel mais pratique)
+#==============================================
+
+@app.get("/health")  # # ✅ Vérifier que l'API tourne
+def health():  # # Handler
+    return {"ok": True}  # # Réponse simple
+
+#==============================================
+# 1) Endpoint : Scrape arXiv
 #==============================================
 
 class ArxivScrapeRequest(BaseModel):  # # 🧾 Schéma de requête
     query: str  # # 🔎 Mots-clés
     max_results: int = 50  # # 🎯 Limite (capée à 100)
     sort: str = "relevance"  # # 🧭 relevance | submitted_date
-    subcategory: str | None = None  # # 🧩 Ex cs.LG
 
 @app.post("/scrape/arxiv")  # # 🛣️ Endpoint scrapping
 def scrape_arxiv(req: ArxivScrapeRequest):  # # 🎯 Handler
@@ -34,23 +41,21 @@ def scrape_arxiv(req: ArxivScrapeRequest):  # # 🎯 Handler
             query=req.query,  # # 🔎
             max_results=req.max_results,  # # 🎯
             sort=req.sort,  # # 🧭
-            subcategory=req.subcategory,  # # 🧩
             polite_min_s=1.5,  # # 😇
             polite_max_s=2.0,  # # 😇
-            data_lake_raw_dir="data_lake/raw/cache",  # # 💾 (comme ton besoin cache)
+            data_lake_raw_dir="data_lake/raw/cache",  # # 💾
         )  # # ✅ Fin appel
     except Exception as e:  # # ❌ Si crash
         return {"ok": False, "error": str(e)}  # # 🧾 Erreur structurée
 
 #==============================================
-# 2) Nouveau endpoint : Question -> Scraping -> Qwen3 -> Réponse
+# 2) Endpoint : Question -> Scraping -> Qwen3 -> Réponse
 #==============================================
 
 class AskRequest(BaseModel):  # # 🧾 Requête QA
     question: str  # # ❓ Question utilisateur
     max_results: int = 3  # # 🎯 Nombre de papiers à utiliser
     sort: str = "relevance"  # # 🧭 Tri arXiv
-    subcategory: str | None = None  # # 🧩 Option
     model: str = "qwen3:1.7b"  # # 🤖 Modèle Ollama
 
 def _clean(s: str) -> str:  # # 🧹 Nettoyage simple
@@ -97,12 +102,11 @@ def ask(req: AskRequest):  # # 🎯 Handler QA
         if not question:  # # Si vide
             return {"ok": False, "error": "Question vide."}  # # Retour
 
-        # 1) Scraping arXiv (query = question, MVP)
+        # 1) Scraping arXiv (query = question)
         results = scrape_arxiv_cs(  # # Scrape
             query=question,  # # 🔎
             max_results=req.max_results,  # # 🎯
             sort=req.sort,  # # 🧭
-            subcategory=req.subcategory,  # # 🧩
             polite_min_s=1.5,  # # 😇
             polite_max_s=2.0,  # # 😇
             data_lake_raw_dir="data_lake/raw/cache",  # # 💾
