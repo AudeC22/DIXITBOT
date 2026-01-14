@@ -46,7 +46,7 @@
         "references",
         "references_dois"
       ],
-      "url_hint_if_missing": "Champs manquants: doi, versions, last_updated_raw, published_date, license, sections, content_text, references, references_dois. Tu peux vérifier ici: abs=https://arxiv.org/abs/2601.08457 | html=https://arxiv.org/html/2601.08457 | pdf=https://arxiv.org/pdf/2601.08457"
+      "url_hint_if_missing": "Champs manquants: doi, versions, last_updated_raw, published_date, license, sections, content_text, references, references_dois. Tu peux verifier ici: abs=https://arxiv.org/abs/2601.08457 | html=https://arxiv.org/html/2601.08457 | pdf=https://arxiv.org/pdf/2601.08457"
     },
     {
       "arxiv_id": "2601.08179",
@@ -750,7 +750,7 @@
         "published_date",
         "license"
       ],
-      "url_hint_if_missing": "Champs manquants: versions, last_updated_raw, published_date, license. Tu peux vérifier ici: abs=https://arxiv.org/abs/2601.08179 | html=https://arxiv.org/html/2601.08179v1 | pdf=https://arxiv.org/pdf/2601.08179"
+      "url_hint_if_missing": "Champs manquants: versions, last_updated_raw, published_date, license. Tu peux verifier ici: abs=https://arxiv.org/abs/2601.08179 | html=https://arxiv.org/html/2601.08179v1 | pdf=https://arxiv.org/pdf/2601.08179"
     },
     {
       "arxiv_id": "2601.08151",
@@ -1202,10 +1202,10 @@
         "license",
         "references_dois"
       ],
-      "url_hint_if_missing": "Champs manquants: doi, versions, last_updated_raw, published_date, license, references_dois. Tu peux vérifier ici: abs=https://arxiv.org/abs/2601.08151 | html=https://arxiv.org/html/2601.08151v1 | pdf=https://arxiv.org/pdf/2601.08151"
+      "url_hint_if_missing": "Champs manquants: doi, versions, last_updated_raw, published_date, license, references_dois. Tu peux verifier ici: abs=https://arxiv.org/abs/2601.08151 | html=https://arxiv.org/html/2601.08151v1 | pdf=https://arxiv.org/pdf/2601.08151"
     }
   ],
-  "bundle_html_file": "data_lake\\raw\\scrappingresults_arxiv_bundle_20260114_105917.html",
+  "bundle_html_file": "data_lake\\raw\\cache\\scrappingresults_arxiv_bundle_20260114_140719.html",
   "supported_fields": [
     "arxiv_id",
     "title",
