@@ -13,12 +13,15 @@ Amine Marzak
 
 # 🤖 DIXITBOT — Agent conversationnel intelligent
 
+📦 Structure du projet
 Ce projet est un **agent conversationnel intelligent** développé dans le cadre du projet IA BOT qui génère des réponses via Ollama (Qwen3).
 Il repose sur une architecture en **4 couches** :
-- Frontend (web app)
-- Backend Python (API REST)
-- Serveur MCP (tooling)
+- Frontend (web app (HTML/CSS/JS))
+- Backend Python → API FastAPI(API REST) + outils MCP + scraping + email
+- data_lake/ → Cache, raw HTML, exports
+- module_Email/ → Tool email
 - Modèle IA local (Ollama)
+- requirements.txt → Dépendances Python
 
 ---
 
@@ -72,6 +75,8 @@ _ HTML/CSS/JS
 _ MCP-like tools
 _ Python 3.13
 
+Licence : Aucune licence necessaire
+
 🧩 Modules principaux
 1) Module Scraping (arXiv)
 
@@ -117,103 +122,91 @@ Endpoint : POST /send-email dans backend/app/main.py
 ℹ️ Le module email utilise le conversation_history fourni (par le ?).
 L’historique est dans raw/conversation_history/ en format JSON
 
-## ⚙️ Installation (environnement local)
+Installation (environnement local)
+Prérequis
+Windows 10 / 11 ou macOS (Sequoia 15.7.3)
 
-### 1️⃣ Prérequis
+Python 3.13.7
 
-- Systeme exploitation Windows 10, 11, IOS sequoia 15.7.3 
-- Python 3.13.7
-- Git Hub 
-- Connexion Internet (pour le scraping et le téléchargement du modèle)
+Git
 
----
-### 2️⃣ Création d’un environnement virtuel (venv)
-Un venv isole les dépendances Python du projet (évite de polluer Python global).
+Connexion Internet (scraping + téléchargement du modèle IA)
 
-Commandes recommandées (Windows PowerShell) :
-
+Création de l’environnement virtuel et installation des dépendances
+bash
 # Depuis la racine du projet
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 
----
-3️⃣ Installer les dépendances Python
+# Installation des dépendances Python
 pip install -r requirements.txt
+Installation d’Ollama (obligatoire)
+Ollama permet d’exécuter un modèle de langage open‑source en local.
 
----
+Téléchargement : https://ollama.com/download/windows
 
-### 3️⃣ Installer Ollama (obligatoire)
+Après installation, redémarrer le terminal puis vérifier :
 
-
-Ollama est utilisé pour exécuter un **modèle de langage open-source en local**.
-
-👉 Télécharger et installer Ollama pour Windows :  
-https://ollama.com/download/windows
-
-Après installation, redémarrer VS Code ou le terminal, puis vérifier :
-
-```bash
+bash
 ollama --version
-ollama version is 0.14.1
-ollama pull qwen3 1.7B
+ollama pull qwen3:1.7b
+Installation de MailHog (module Email)
+MailHog sert de boîte mail locale pour tester l’envoi d’emails.
 
-5️⃣ Installer MailHog (pour module Email)
+Téléchargement : https://github.com/AudeC22/DIXITBOT.git  
+(Fichier recommandé : MailHog_windows_amd64.exe)
 
-MailHog sert de “boîte mail de test” locale.
+Lancement :
 
-✅ Version recommandée : MailHog 1.0.1
-Fichier Windows : MailHog_windows_amd64.exe (pour Windows 64-bit)
-
-👉 Téléchargement : https://github.com/AudeC22/DIXITBOT.git
-
-Lancement (exemple) :
-
-# Exemple si le fichier est dans C:\MailHog\
+bash
+# Exemple si MailHog est dans C:\MailHog\
 C:\MailHog\MailHog_windows_amd64.exe
-
-
-Puis ouvrir l’UI :
-
+Interface web MailHog :
 http://127.0.0.1:8025
 
-ℹ️ Ports MailHog :
+Ports utilisés :
 
-1025 = SMTP (réception des emails de test)
+SMTP : 1025
 
-8025 = UI web (boîte de réception)
+UI : 8025
 
-▶️ Lancer le projet
-1) Lancer MailHog (terminal 1)
+Lancement du projet
+1. Lancer MailHog (terminal 1)
+bash
 C:\MailHog\MailHog_windows_amd64.exe
-
-2) Lancer l’API FastAPI (terminal 2)
-
-Depuis la racine :
-
+2. Lancer le backend (FastAPI) — terminal 2
+bash
+# Depuis la racine du projet
 .\.venv\Scripts\Activate.ps1
 cd backend
 python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
-
-
 Swagger UI :
-
 http://127.0.0.1:8000/docs
 
-ℹ️ Le port 8000 n’est pas une “version FastAPI” : c’est juste le port réseau utilisé par Uvicorn.
+3. Lancer le frontend
+Arborescence :
 
-3) Lancer le frontend
+Code
+frontend/
+   index.html
+   script.js
+   style.css
+Méthodes possibles :
 
-❓ TODO : comment se lance le frontend ?
+Ouvrir directement frontend/index.html
 
-fichier HTML direct ?
+Ou utiliser un serveur local (ex. Live Server dans VS Code)
 
-serveur local (Live Server VSCode) ?
+Ou lancer un serveur simple :
 
-npm / vite / autre ?
+bash
+cd frontend
+python -m http.server 5500
+Frontend accessible sur :
+http://127.0.0.1:5500 (127.0.0.1 in Bing)
 
-🔌 Ports utilisés (récapitulatif)
-
-FastAPI (Uvicorn) : http://127.0.0.1:8000
+Ports utilisés (récapitulatif)
+Backend FastAPI : http://127.0.0.1:8000
 
 MailHog SMTP : 127.0.0.1:1025
 
@@ -221,38 +214,22 @@ MailHog UI : http://127.0.0.1:8025
 
 Ollama API : http://127.0.0.1:11434
 
-🧪 Tests rapides
-Test Email via Swagger
-
-Aller sur : http://127.0.0.1:8000/docs
+Tests rapides
+Test de l’envoi d’email via Swagger
+Ouvrir : http://127.0.0.1:8000/docs
 
 Endpoint : POST /send-email
 
-Exemple body :
+Exemple de corps JSON :
 
+json
 {
   "recipient_email": "test@example.com",
   "conversation_history": [
     { "role": "user", "content": "Bonjour", "timestamp": "2026-01-15T13:15:00" },
-    { "role": "assistant", "content": "Salut Aude 👋", "timestamp": "2026-01-15T13:15:05" }
+    { "role": "assistant", "content": "Salut Aude", "timestamp": "2026-01-15T13:15:05" }
   ],
   "subject": "Conversation DIXITBOT"
 }
-
-
-Voir l’email dans MailHog : http://127.0.0.1:8025
-
-🛠️ Problèmes courants (Windows)
-1) “Python n’est pas reconnu”
-
-Utiliser :
-
-py --version
-py -m uvicorn app.main:app --reload --port 8000
-
-2) “Port déjà utilisé”
-
-Changer le port :
-
-python -m uvicorn app.main:app --reload --port 8001
-
+Vérifier l’email dans MailHog :
+http://127.0.0.1:8025
