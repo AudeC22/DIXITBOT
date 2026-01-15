@@ -1,0 +1,11 @@
+{
+  "smtp": {
+    "host": "127.0.0.1",
+    "port": 1025,
+    "use_tls": false,
+    "username": "",
+    "password": "",
+    "from_email": "dixitbot@local.test",
+    "from_name": "DIXITBOT (local)"
+  }
+}

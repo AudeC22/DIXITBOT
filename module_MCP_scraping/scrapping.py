@@ -501,205 +501,206 @@ def scrape_arxiv_cs_scoped(
 
     errors_global: List[str] = []  # # Liste d’erreurs globales (FR: erreurs du tool) : utilisée pour signaler 429/500/timeout sans dépendre des erreurs “par item” | Étape: [E2] | Source: [S3]  # #
 
-#---------------------------------------------------------------------------------
     # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    # 🎯 Allowed categories  # #  | Étape: [E1] | Source: [S0]  # #
+    # 🎯 Allowed categories                                   # #  | Étape: [E1] | Source: [S0]  # #
     # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    allowed_subcats = _allowed_subcats_for_theme(theme)  # # Liste cats # # Respect: périmètre thèmes | Étape: [E1] | Source: [S0]  # #
+    allowed_subcats = _allowed_subcats_for_theme(theme)  # # Cette ligne appelle la fonction qui choisit la liste de catégories arXiv autorisées selon le thème, pour limiter le scraping au périmètre demandé | Étape: [E1] | Source: [S0]  # #
 
     # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    # 🔎 Pagination search/cs  # #  | Étape: [E1] | Source: [S0]  # #
+    # 🔎 Pagination search/cs                                  # #  | Étape: [E1] | Source: [S0]  # #
     # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    collected: List[Dict[str, Any]] = []  # # Items bruts CS # # Respect: collecte contrôlée | Étape: [E1] | Source: [S1]  # #
-    bundle_parts: List[str] = []  # # HTML debug # # Respect: cache local (pas envoyé au LLM) | Étape: [E2] | Source: [S2]  # #
-    start = 0  # # Pagination # # Respect: contrôle volume | Étape: [E1] | Source: [S0]  # #
-    last_search_url = ""  # # Debug # # Respect: traçabilité | Étape: [E1] | Source: [S0]  # #
-    last_search_http: Optional[int] = None  # # Debug # # Respect: traçabilité | Étape: [E2] | Source: [S3]  # #
-    diag_last: Dict[str, Any] = {}  # # Debug # # Respect: traçabilité | Étape: [E2] | Source: [S6]  # #
-    anti_bot_or_weird_page = False  # # Flag # # Respect: transparence | Étape: [E2] | Source: [S6]  # #
+    collected: List[Dict[str, Any]] = []  # # Cette ligne crée la liste qui accumule les items bruts récupérés sur les pages de résultats arXiv (avant filtrage), afin de contrôler le nombre total collecté | Étape: [E1] | Source: [S1]  # #
+    bundle_parts: List[str] = []  # # Cette ligne prépare une liste de morceaux HTML “debug” pour reconstituer un bundle local (preuve + diagnostic) sans envoyer du HTML au LLM | Étape: [E2] | Source: [S2]  # #
+    start = 0  # # Cette ligne initialise l’offset de pagination (0, 50, 100, …) pour parcourir les pages de résultats de manière contrôlée | Étape: [E1] | Source: [S0]  # #
+    last_search_url = ""  # # Cette ligne initialise une variable de trace pour garder l’URL de la dernière requête search (utile si ça casse) | Étape: [E1] | Source: [S0]  # #
+    last_search_http: Optional[int] = None  # # Cette ligne initialise le dernier code HTTP pour diagnostiquer rapidement un 500/429/timeout sans relancer | Étape: [E2] | Source: [S3]  # #
+    diag_last: Dict[str, Any] = {}  # # Cette ligne initialise le dernier diagnostic de parsing (counts/selectors/flags) pour comprendre “pourquoi items=[]” | Étape: [E2] | Source: [S6]  # #
+    anti_bot_or_weird_page = False  # # Cette ligne initialise un drapeau qui indique si on a détecté une page bizarre (anti-bot/consent) pour être transparent sur la cause | Étape: [E2] | Source: [S6]  # #
 
-    while len(collected) < max_results:  # # Loop # # Respect: contrôle volume | Étape: [E1] | Source: [S0]  # #
-        search_url = build_search_url(query=user_query, start=start, size=PAGE_SIZE, sort=sort)  # # URL # # Respect: query simple | Étape: [E1] | Source: [S0]  # #
-        last_search_url = search_url  # # Trace # # Respect: debug | Étape: [E1] | Source: [S0]  # #
-        html, code = http_get_text(session=session, url=search_url, timeout_s=HTTP_TIMEOUT_S)  # # GET # # Respect: timeout+retry | Étape: [E2] | Source: [S3]  # #
-        last_search_http = code  # # Trace # # Respect: debug | Étape: [E2] | Source: [S3]  # #
+    while len(collected) < max_results:  # # Cette ligne démarre une boucle qui continue tant qu’on n’a pas collecté assez d’items, ce qui garantit qu’on respecte la limite demandée | Étape: [E1] | Source: [S0]  # #
+        search_url = build_search_url(query=user_query, start=start, size=PAGE_SIZE, sort=sort)  # # Cette ligne appelle la fonction qui construit l’URL /search/cs avec query+start+size+sort, ce qui rend la pagination propre et prévisible | Étape: [E1] | Source: [S0]  # #
+        last_search_url = search_url  # # Cette ligne stocke l’URL courante dans une variable de trace, pour la retrouver dans le JSON si le parsing échoue | Étape: [E1] | Source: [S0]  # #
+        html, code = http_get_text(session=session, url=search_url, timeout_s=HTTP_TIMEOUT_S)  # # Cette ligne fait le GET HTTP via la fonction robuste (gère timeout/erreurs réseau) et récupère (html, status_code) pour diagnostic | Étape: [E2] | Source: [S3]  # #
+        last_search_http = code  # # Cette ligne mémorise le code HTTP de la dernière page search, pour expliquer un échec (ex: 500) sans re-parser | Étape: [E2] | Source: [S3]  # #
 
-        weird = _detect_weird_page_signals(html)  # # Signaux # # Respect: diagnostiquer consent/robot/no-results | Étape: [E2] | Source: [S6]  # #
+        weird = _detect_weird_page_signals(html)  # # Cette ligne appelle la fonction qui “scanne” le HTML pour repérer consent/robot/captcha/no-results, afin d’éviter un faux parsing sur une page de blocage | Étape: [E2] | Source: [S6]  # #
 
-        bundle_parts.append(f"<!-- SEARCH URL: {search_url} | HTTP {code} -->\n")  # # En-tête debug # # Respect: traçabilité | Étape: [E2] | Source: [S3]  # #
-        bundle_parts.append(f"<!-- WEIRD: {json.dumps(weird)} -->\n")  # # Signaux debug # # Respect: traçabilité | Étape: [E2] | Source: [S6]  # #
-        bundle_parts.append((html or "")[:200000])  # # Coupe 200k # # Respect: pas massif, cache debug local | Étape: [E2] | Source: [S2]  # #
-        bundle_parts.append("\n<!-- END SEARCH -->\n")  # # Fin bloc # # Respect: traçabilité | Étape: [E1] | Source: [S0]  # #
+        bundle_parts.append(f"<!-- SEARCH URL: {search_url} | HTTP {code} -->\n")  # # Cette ligne ajoute un en-tête HTML dans le bundle debug pour tracer l’URL et le code HTTP associé à ce bloc | Étape: [E2] | Source: [S3]  # #
+        bundle_parts.append(f"<!-- WEIRD: {json.dumps(weird)} -->\n")  # # Cette ligne ajoute dans le bundle debug les drapeaux “weird” en JSON, pour comprendre si on a été bloqué ou redirigé | Étape: [E2] | Source: [S6]  # #
+        bundle_parts.append((html or "")[:200000])  # # Cette ligne stocke seulement un extrait (200k chars) du HTML pour éviter un fichier énorme tout en gardant assez de matière pour diagnostiquer | Étape: [E2] | Source: [S2]  # #
+        bundle_parts.append("\n<!-- END SEARCH -->\n")  # # Cette ligne marque la fin du bloc search dans le bundle debug, pour séparer clairement les pages (lisible en local) | Étape: [E1] | Source: [S0]  # #
 
-        if code != 200:  # # HTTP non-200 => erreur tool | Étape: [E2] | Source: [S3]  # #
-            errors_global.append(f"SEARCH_HTTP_{code}")  # # Log erreur globale | Étape: [E2] | Source: [S0]  # #
-            break  # # Stop # # Respect: ne pas boucler | Étape: [E1] | Source: [S0]  # #
-        if weird.get("contains_we_are_sorry") or weird.get("contains_robot") or weird.get("contains_consent"):  # # Détecte page anti-bot/consent (évite faux parsing) | Étape: [E2] | Source: [S3]  # #
-            anti_bot_or_weird_page = True  # # Marque page bizarre (pour diagnostic) | Étape: [E2] | Source: [S6]  # #
-            errors_global.append("ANTI_BOT_OR_WEIRD_PAGE")  # # Erreur globale tool (contrat stable) | Étape: [E1] | Source: [S1]  # #
-            break  # # Stop (on n'insiste pas) | Étape: [E2] | Source: [S0]  # #
+        if code != 200:  # # Ici on détecte un HTTP non-200 (ex: 500/429), car dans ce cas on ne peut pas faire confiance au contenu HTML pour parser correctement | Étape: [E2] | Source: [S3]  # #
+            errors_global.append(f"SEARCH_HTTP_{code}")  # # Cette ligne ajoute une erreur globale normalisée (ex: SEARCH_HTTP_500) pour que l’API puisse l’exploiter facilement (contrat stable) | Étape: [E2] | Source: [S0]  # #
+            break  # # Cette ligne stoppe la boucle pour éviter d’insister (risque de spam + pages inutiles) quand l’HTTP est déjà en erreur | Étape: [E1] | Source: [S0]  # #
+        if weird.get("contains_we_are_sorry") or weird.get("contains_robot") or weird.get("contains_consent"):  # # Ici on teste les signaux anti-bot/consent, car ces pages ressemblent à arXiv mais ne contiennent pas des résultats fiables | Étape: [E2] | Source: [S6]  # #
+            anti_bot_or_weird_page = True  # # Cette ligne met le flag à True pour que le JSON final dise clairement “page bizarre détectée” | Étape: [E2] | Source: [S6]  # #
+            errors_global.append("ANTI_BOT_OR_WEIRD_PAGE")  # # Cette ligne ajoute une erreur globale explicite, afin que FastAPI / l’agent puisse décider d’arrêter ou de prévenir l’utilisateur | Étape: [E2] | Source: [S1]  # #
+            break  # # Cette ligne stoppe immédiatement : on n’insiste pas sur un blocage/consent, sinon on aggrave la situation côté serveur | Étape: [E2] | Source: [S0]  # #
 
-        page_items, diag = parse_search_page(html)  # # Parse # # Respect: extraction ciblée | Étape: [E2] | Source: [S6]  # #
-        diag_last = diag  # # Trace # # Respect: debug | Étape: [E2] | Source: [S6]  # #
+        page_items, diag = parse_search_page(html)  # # Cette ligne appelle la fonction de parsing search/cs qui extrait les items + produit un diagnostic (compte de noeuds, flags, etc.) | Étape: [E2] | Source: [S6]  # #
+        diag_last = diag  # # Cette ligne sauvegarde le dernier diagnostic dans une variable de trace pour le renvoyer dans le JSON final | Étape: [E2] | Source: [S6]  # #
 
-        if diag.get("contains_no_results"):  # # Aucun résultat # # Respect: robustesse | Étape: [E2] | Source: [S6]  # #
-            break  # # Stop # # Respect: contrôle | Étape: [E1] | Source: [S0]  # #
-        if not page_items:  # # Aucun résultat parsé => diag + erreur soft | Étape: [E2] | Source: [S0]  # #
-            errors_global.append("NO_RESULTS_PARSED")  # # Indique parsing vide | Étape: [E2] | Source: [S6]  # #
-            break  # # Stop # # Respect: contrôle | Étape: [E1] | Source: [S0]  # #
+        if diag.get("contains_no_results"):  # # Ici on détecte explicitement “No results found”, car dans ce cas il est inutile de paginer davantage | Étape: [E2] | Source: [S6]  # #
+            break  # # Cette ligne arrête la boucle car il n’y a rien à collecter : c’est une fin normale (pas une erreur) | Étape: [E1] | Source: [S0]  # #
+        if not page_items:  # # Ici on gère le cas “HTML ok mais parsing vide” (DOM changé ou selector cassé), car il faut sortir plutôt que boucler à vide | Étape: [E2] | Source: [S0]  # #
+            errors_global.append("NO_RESULTS_PARSED")  # # Cette ligne ajoute une erreur globale dédiée au “parsing vide”, utile pour distinguer ce cas d’un “vrai 0 résultat” | Étape: [E2] | Source: [S6]  # #
+            break  # # Cette ligne stoppe la boucle, sinon on paginerait en boucle sans rien ajouter (inutile) | Étape: [E1] | Source: [S0]  # #
 
-        collected.extend(page_items)  # # Ajoute # # Respect: collecte contrôlée | Étape: [E1] | Source: [S1]  # #
+        collected.extend(page_items)  # # Cette ligne ajoute tous les items parsés de la page à la liste globale, pour accumuler progressivement jusqu’à max_results | Étape: [E1] | Source: [S1]  # #
 
         # ✅ CORRECTION IMPORTANTE : si la page a < PAGE_SIZE résultats, inutile d'aller à start+50
-        if len(page_items) < PAGE_SIZE:  # # Dernière page probable # # Respect: éviter requêtes inutiles (et erreurs 500) | Étape: [E1] | Source: [S1]  # #
-            break  # # Stop # # Respect: fréquence raisonnable | Étape: [E1] | Source: [S0]  # #
+        if len(page_items) < PAGE_SIZE:  # # Ici on détecte une “dernière page probable” : si arXiv renvoie moins de 50 résultats, la page suivante serait souvent vide ou peut déclencher des erreurs inutiles | Étape: [E1] | Source: [S1]  # #
+            break  # # Cette ligne arrête la boucle pour éviter des requêtes inutiles, réduire les risques 500/429, et respecter une fréquence raisonnable | Étape: [E1] | Source: [S0]  # #
 
-        start += PAGE_SIZE  # # Next page # # Respect: pagination contrôlée | Étape: [E1] | Source: [S0]  # #
-        sleep_polite(min_s=polite_min_s, max_s=polite_max_s)  # # Politesse # # Respect: éviter spam | Étape: [E4] | Source: [S5]  # #
+        start += PAGE_SIZE  # # Cette ligne avance l’offset de pagination (0→50→100…) pour aller chercher la page suivante sans doublons | Étape: [E1] | Source: [S0]  # #
+        sleep_polite(min_s=polite_min_s, max_s=polite_max_s)  # # Cette ligne applique une pause aléatoire via la fonction de politesse, pour éviter un rythme robotique et limiter le risque de blocage | Étape: [E4] | Source: [S5]  # #
 
-    collected = collected[:max_results]  # # Tronque # # Respect: limite demandée | Étape: [E1] | Source: [S0]  # #
-
-    # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    # 🧹 Filtrage par catégories  # #  | Étape: [E1] | Source: [S0]  # #
-    # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    filtered = filter_items_by_subcats(collected, allowed_subcats=allowed_subcats)  # # Filtre cats # # Respect: scope demandé | Étape: [E1] | Source: [S1]  # #
-    if enable_keyword_filter:  # # Si activé # # Respect: pertinence | Étape: [E1] | Source: [S0]  # #
-        filtered = _keyword_filter(filtered, theme=theme)  # # Filtre mots-clés # # Respect: fallback si cats manquent | Étape: [E2] | Source: [S6]  # #
+    collected = collected[:max_results]  # # Cette ligne tronque la liste au nombre demandé, au cas où la dernière page a ajouté “trop” d’items (contrat: respecter max_results) | Étape: [E1] | Source: [S0]  # #
 
     # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    # 🔎 Enrich /abs  # #  | Étape: [E1] | Source: [S0]  # #
+    # 🧹 Filtrage par catégories                               # #  | Étape: [E1] | Source: [S0]  # #
     # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    if enrich_abs:  # # Si enrich # # Respect: enrichissement minimal | Étape: [E1] | Source: [S0]  # #
-        for it in filtered:  # # Parcours # # Respect: traitement contrôlé | Étape: [E1] | Source: [S0]  # #
-            it["doi"] = ""  # # Init # # Respect: champs stables | Étape: [E1] | Source: [S0]  # #
-            it["versions"] = []  # # Init # # Respect: champs stables | Étape: [E1] | Source: [S0]  # #
-            it["last_updated_raw"] = ""
-            it["method"] = ""  # # Méthode # # Étape: [ROBUSTESSE_PARSING] | Source: [S8]  # #
-            it["references"] = []  # # Références # # Étape: [ROBUSTESSE_PARSING]# #  # # Init # # Respect: champs stables | Étape: [ROBUSTESSE_PARSING] | Source: [S8]  # #
-            it["errors"] = []  # # Init # # Respect: sortie structurée | Étape: [E1] | Source: [S1]  # #
+    filtered = filter_items_by_subcats(collected, allowed_subcats=allowed_subcats)  # # Cette ligne appelle la fonction de filtrage par catégories arXiv pour conserver uniquement les items qui matchent le périmètre du thème | Étape: [E1] | Source: [S1]  # #
+    if enable_keyword_filter:  # # Ici on vérifie si le fallback par mots-clés est activé, pour l’utiliser seulement si tu le souhaites (contrôle) | Étape: [E1] | Source: [S0]  # #
+        filtered = _keyword_filter(filtered, theme=theme)  # # Cette ligne applique le filtrage par mots-clés (fallback) afin de garder une pertinence minimale si les catégories sont manquantes/instables | Étape: [E2] | Source: [S6]  # #
 
-            url_abs = it.get("abs_url") or ""  # # URL # # Respect: utile | Étape: [E1] | Source: [S0]  # #
-            if not url_abs:  # # Si absent # # Respect: robustesse | Étape: [E1] | Source: [S0]  # #
-                continue  # # Skip # # Respect: robustesse | Étape: [E1] | Source: [S0]  # #
+    # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
+    # 🔎 Enrich /abs                                           # #  | Étape: [E1] | Source: [S0]  # #
+    # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
+    if enrich_abs:  # # Ici on vérifie si l’enrichissement est activé : si oui on va visiter /abs (et éventuellement /html) pour compléter quelques champs utiles | Étape: [E1] | Source: [S0]  # #
+        for it in filtered:  # # Cette ligne parcourt chaque item filtré pour enrichir un par un, ce qui limite le volume et facilite le debug par item | Étape: [E1] | Source: [S0]  # #
+            it["doi"] = ""  # # Cette ligne initialise le champ DOI à vide pour garder un contrat stable même si le DOI n’existe pas (pas de KeyError) | Étape: [E1] | Source: [S0]  # #
+            it["versions"] = []  # # Cette ligne initialise l’historique de versions à [] pour être stable même si on ne trouve pas de “submission-history” | Étape: [E1] | Source: [S0]  # #
+            it["last_updated_raw"] = ""  # # Cette ligne initialise la dernière date/ligne d’update (raw) à vide pour éviter les champs manquants | Étape: [E1] | Source: [S0]  # #
+            it["method"] = ""  # # Cette ligne initialise le champ method (FR: section “Méthode”) pour pouvoir le remplir depuis /html si dispo, sinon garder vide | Étape: [E5] | Source: [S8]  # #
+            it["references"] = []  # # Cette ligne initialise le champ references (FR: bibliographie) en liste, car une référence = un élément ; vide si non dispo | Étape: [E5] | Source: [S8]  # #
+            it["errors"] = []  # # Cette ligne initialise la liste d’erreurs par item (FR: erreurs papier) pour stocker abs_http_XXX/html_http_XXX sans casser le tool | Étape: [E3] | Source: [S3]  # #
 
-            abs_html, abs_code = http_get_text(session=session, url=url_abs, timeout_s=HTTP_TIMEOUT_S)  # # GET /abs # # Respect: timeout+retry | Étape: [E2] | Source: [S3]  # #
-            bundle_parts.append(f"<!-- ABS URL: {url_abs} | HTTP {abs_code} -->\n")  # # Debug # # Respect: traçabilité | Étape: [E2] | Source: [S3]  # #
-            bundle_parts.append((abs_html or "")[:200000])  # # Coupe # # Respect: pas massif | Étape: [E1] | Source: [S0]  # #
-            bundle_parts.append("\n<!-- END ABS -->\n")  # # Fin # # Respect: traçabilité | Étape: [E1] | Source: [S0]  # #
+            url_abs = it.get("abs_url") or ""  # # Cette ligne récupère l’URL /abs depuis l’item ; “or ''” évite None et garde un comportement stable | Étape: [E1] | Source: [S0]  # #
+            if not url_abs:  # # Ici on vérifie que l’URL /abs existe, sinon on ne peut pas enrichir (on saute proprement) | Étape: [E1] | Source: [S0]  # #
+                continue  # # Cette ligne skip l’item courant, car enrichir sans /abs est impossible ; on évite un crash et on continue les autres | Étape: [E1] | Source: [S0]  # #
 
-            if abs_code == 200:  # # OK # # Respect: robustesse | Étape: [E1] | Source: [S0]  # #
-                abs_data = parse_abs_page(abs_html)  # # Parse # # Respect: extraction ciblée | Étape: [E1] | Source: [S8]  # #
-                it["doi"] = abs_data.get("doi", "")  # # DOI # # Respect: champ utile | Étape: [E1] | Source: [S0]  # #
-                it["versions"] = abs_data.get("versions", [])  # # Versions # # Respect: champ utile | Étape: [E1] | Source: [S0]  # #
-                it["last_updated_raw"] = abs_data.get("last_updated_raw", "")  # # Last
-                html_url = extract_html_url_from_abs(abs_html=abs_html, arxiv_id=it.get("arxiv_id", ""))  # # Cherche lien /html # # Étape: [ROBUSTESSE_PARSING] | Source: [S8]  # #
-                if html_url:  # # Si /html existe # # Étape: [ROBUSTESSE_PARSING] | Source: [S6]  # #
-                    html_full, html_code = http_get_text(session=session, url=html_url, timeout_s=30)  # # GET /html # # Étape: [ROBUSTESSE_PARSING] | Source: [S2]  # #
-                    bundle_parts.append(f"<!-- HTML URL: {html_url} | HTTP {html_code} -->\n")  # # Trace # # Étape: [ROBUSTESSE_PARSING] | Source: [S0]  # #
-                    bundle_parts.append(html_full[:200000])  # # Cache debug # # Étape: [ROBUSTESSE_PARSING] | Source: [S2]  # #
-                    bundle_parts.append("\n<!-- END HTML -->\n")  # # Fin # # Étape: [ROBUSTESSE_PARSING] | Source: [S2]  # #
-                    if html_code == 200:  # # OK # # Étape: [ROBUSTESSE_PARSING] | Source: [S6]  # #
-                        method_txt, refs_list = parse_arxiv_html_method_and_references(html_full)  # # Parse sections # # Étape: [ROBUSTESSE_PARSING] | Source: [S8]  # #
-                        if method_txt:  # # Si trouvé # # Étape: [ROBUSTESSE_PARSING] | Source: [S8]  # #
-                            it["method"] = method_txt  # # Stocke # # Étape: [E1] | Source: [S1]  # #
-                        if refs_list:  # # Si trouvé # # Étape: [ROBUSTESSE_PARSING] | Source: [S0]  # #
-                            it["references"] = refs_list  # # Stocke # # Étape: [E1] | Source: [S1]  # #
-                    else:  # # KO # # Étape: [ROBUSTESSE_PARSING] | Source: [S0]  # #
-                        it["errors"].append(f"html_http_{html_code}")  # # Trace # # Étape: [ROBUSTESSE_PARSING] | Source: [S0]  # #
- # # Respect: champ utile | Étape: [E1] | Source: [S0]  # #
-                if is_empty(it.get("abstract")) and not is_empty(abs_data.get("abstract")):  # # Fallback abstract # # Respect: compléter sans bruit | Étape: [E2] | Source: [S6]  # #
-                    it["abstract"] = abs_data.get("abstract", "")  # # Inject # # Respect: qualité | Étape: [E1] | Source: [S0]  # #
-            else:  # # KO # # Respect: robustesse | Étape: [E1] | Source: [S0]  # #
-                it["errors"].append(f"abs_http_{abs_code}")  # # Trace # # Respect: diagnostic | Étape: [E2] | Source: [S6]  # #
+            abs_html, abs_code = http_get_text(session=session, url=url_abs, timeout_s=HTTP_TIMEOUT_S)  # # Cette ligne fait un GET sur /abs via la fonction robuste et récupère (HTML, code) pour pouvoir parser OU enregistrer une erreur | Étape: [E2] | Source: [S3]  # #
+            bundle_parts.append(f"<!-- ABS URL: {url_abs} | HTTP {abs_code} -->\n")  # # Cette ligne trace dans le bundle debug l’URL /abs et le code HTTP, pour reproduire le problème localement | Étape: [E2] | Source: [S3]  # #
+            bundle_parts.append((abs_html or "")[:200000])  # # Cette ligne stocke un extrait du HTML /abs dans le bundle (limité) pour diagnostiquer sans générer un fichier trop gros | Étape: [E2] | Source: [S2]  # #
+            bundle_parts.append("\n<!-- END ABS -->\n")  # # Cette ligne ferme le bloc /abs dans le bundle debug, pour séparer les pages proprement | Étape: [E1] | Source: [S0]  # #
 
-            sleep_polite(min_s=polite_min_s, max_s=polite_max_s)  # # Politesse # # Respect: éviter spam | Étape: [E4] | Source: [S5]  # #
+            if abs_code == 200:  # # Ici on vérifie que /abs répond OK avant de parser, car parser une page d’erreur produirait des champs faux/vide | Étape: [E1] | Source: [S0]  # #
+                abs_data = parse_abs_page(abs_html)  # # Cette ligne appelle la fonction qui extrait DOI + versions + abstract fallback depuis /abs (parsing ciblé) | Étape: [E2] | Source: [S6]  # #
+                it["doi"] = abs_data.get("doi", "")  # # Cette ligne copie le DOI extrait (ou vide) ; get() évite KeyError si le parsing n’a rien trouvé | Étape: [E1] | Source: [S0]  # #
+                it["versions"] = abs_data.get("versions", [])  # # Cette ligne copie la liste des versions (ou []) ; utile pour tracer l’historique v1/v2… | Étape: [E1] | Source: [S0]  # #
+                it["last_updated_raw"] = abs_data.get("last_updated_raw", "")  # # Cette ligne copie la dernière ligne d’update, utile pour “dernière maj” (ou vide si absent) | Étape: [E1] | Source: [S0]  # #
+
+                html_url = extract_html_url_from_abs(abs_html=abs_html, arxiv_id=it.get("arxiv_id", ""))  # # Cette ligne appelle la fonction qui cherche dans /abs un lien vers /html, car Method/References sont plus faciles à extraire depuis la page HTML | Étape: [E5] | Source: [S8]  # #
+                if html_url:  # # Ici on vérifie qu’un lien /html a été trouvé, sinon on ne tente pas l’étape suivante | Étape: [E5] | Source: [S6]  # #
+                    html_full, html_code = http_get_text(session=session, url=html_url, timeout_s=30)  # # Cette ligne fait le GET du /html (si dispo) pour récupérer la structure LaTeX HTML (sections, biblist) | Étape: [E5] | Source: [S2]  # #
+                    bundle_parts.append(f"<!-- HTML URL: {html_url} | HTTP {html_code} -->\n")  # # Cette ligne trace dans le bundle debug l’URL /html et le code HTTP pour diagnostiquer un éventuel blocage | Étape: [E5] | Source: [S0]  # #
+                    bundle_parts.append(html_full[:200000])  # # Cette ligne garde un extrait de la page /html dans le bundle debug, pour vérifier les sélecteurs “method/bibliography” | Étape: [E5] | Source: [S2]  # #
+                    bundle_parts.append("\n<!-- END HTML -->\n")  # # Cette ligne ferme le bloc /html dans le bundle debug, pour séparer proprement les pages | Étape: [E5] | Source: [S2]  # #
+                    if html_code == 200:  # # Ici on vérifie que /html est OK avant d’extraire method/refs, sinon on log l’erreur par item | Étape: [E5] | Source: [S6]  # #
+                        method_txt, refs_list = parse_arxiv_html_method_and_references(html_full)  # # Cette ligne appelle la fonction qui extrait 2 blocs ciblés (Method + References) depuis /html | Étape: [E5] | Source: [S8]  # #
+                        if method_txt:  # # Ici on teste si un texte “method” a réellement été trouvé, pour ne pas écraser avec du vide | Étape: [E5] | Source: [S8]  # #
+                            it["method"] = method_txt  # # Cette ligne stocke le texte de la section “method” dans l’item, pour que l’agent puisse répondre avec plus de contenu utile | Étape: [E5] | Source: [S1]  # #
+                        if refs_list:  # # Ici on teste si des références ont été trouvées, car parfois la bib n’existe pas en HTML arXiv | Étape: [E5] | Source: [S0]  # #
+                            it["references"] = refs_list  # # Cette ligne stocke la liste de références dans l’item (format liste) pour faciliter le QA / citations | Étape: [E5] | Source: [S1]  # #
+                    else:  # # Ici on traite le cas où /html répond en erreur : on ne crash pas, on note juste l’erreur dans it["errors"] | Étape: [E3] | Source: [S3]  # #
+                        it["errors"].append(f"html_http_{html_code}")  # # Cette ligne ajoute une erreur “html_http_XXX” au niveau item, pour diagnostiquer une panne /html sans arrêter tout le scraping | Étape: [E3] | Source: [S0]  # #
+
+                if is_empty(it.get("abstract")) and not is_empty(abs_data.get("abstract")):  # # Ici on déclenche un fallback: si l’abstract de search est vide, on récupère celui de /abs, pour compléter sans ajouter de bruit | Étape: [E2] | Source: [S6]  # #
+                    it["abstract"] = abs_data.get("abstract", "")  # # Cette ligne injecte l’abstract fallback depuis /abs dans l’item, ce qui améliore la qualité des réponses LLM | Étape: [E1] | Source: [S0]  # #
+            else:  # # Ici on traite le cas /abs en erreur (non-200) : on ne crash pas, on stocke un code d’erreur au niveau item | Étape: [E3] | Source: [S3]  # #
+                it["errors"].append(f"abs_http_{abs_code}")  # # Cette ligne ajoute l’erreur “abs_http_XXX” à l’item, pour savoir exactement quel papier a échoué à l’enrichissement | Étape: [E2] | Source: [S6]  # #
+
+            sleep_polite(min_s=polite_min_s, max_s=polite_max_s)  # # Cette ligne attend un peu entre deux appels /abs (et /html) pour éviter d’enchaîner trop vite et réduire le risque de blocage | Étape: [E4] | Source: [S5]  # #
 
     # Missing fields
-    for it in filtered:  # # Parcours # # Respect: diagnostic qualité | Étape: [E2] | Source: [S6]  # #
-        it["missing_fields"] = compute_missing_fields(it)  # # Ajoute # # Respect: sortie structurée + debug | Étape: [E1] | Source: [S1]  # #
-
+    for it in filtered:  # # Cette ligne parcourt tous les items filtrés pour calculer la liste des champs manquants, afin de diagnostiquer rapidement ce qui n’a pas été extrait | Étape: [E2] | Source: [S6]  # #
+        it["missing_fields"] = compute_missing_fields(it)  # # Cette ligne appelle la fonction qui compare SUPPORTED_FIELDS vs valeurs vides, et enregistre le résultat dans l’item (debug qualité) | Étape: [E1] | Source: [S1]  # #
     # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    # 💾 Sauvegardes cache raw  # #  | Étape: [E2] | Source: [S2]  # #
+    # 💾 Sauvegardes cache raw                                # #  | Étape: [E2] | Source: [S2]  # #
     # ===============================  # #  | Étape: [E1] | Source: [S0]  # #
-    bundle_name = f"scrape_arxiv_cs_bundle_{ts}.html"  # # Nom # # Respect: cache debug | Étape: [E2] | Source: [S2]  # #
-    bundle_path = save_text_file(data_lake_raw_dir, bundle_name, "\n".join(bundle_parts))  # # Save # # Respect: cache local visible | Étape: [E2] | Source: [S2]  # #
+    bundle_name = f"scrape_arxiv_cs_bundle_{ts}.html"  # # Cette ligne fabrique le nom du fichier “bundle” HTML avec un timestamp, pour garder une preuve/trace de ce qui a été scrappé à un instant T (debug local) | Étape: [E2] | Source: [S2]  # #
+    bundle_path = save_text_file(data_lake_raw_dir, bundle_name, "\n".join(bundle_parts))  # # Cette ligne appelle la fonction de sauvegarde qui écrit sur disque le bundle HTML (en concaténant bundle_parts), pour pouvoir diagnostiquer un DOM cassé ou une page anti-bot | Étape: [E2] | Source: [S2]  # #
 
-    result: Dict[str, Any] = {  # # Résultat # # Respect: sortie JSON structurée | Étape: [E1] | Source: [S1]  # #
-        "ok": (len(errors_global) == 0),  # # OK seulement si aucune erreur globale | Étape: [E1]# #  # # Statut # # Respect: API stable | Étape: [E1] | Source: [S0]  # #
-        "user_query": user_query,  # # Query # # Respect: traçabilité | Étape: [E1] | Source: [S0]  # #
-        "theme": theme,  # # Thème # # Respect: traçabilité | Étape: [E1] | Source: [S0]  # #
-        "allowed_subcats": allowed_subcats,  # # Périmètre # # Respect: scope explicite | Étape: [E1] | Source: [S0]  # #
-        "sort": sort,  # # Tri # # Respect: contrôle | Étape: [E1] | Source: [S0]  # #
-        "requested_max_results": max_results,  # # Limite # # Respect: pas massif | Étape: [E1] | Source: [S0]  # #
-        "count_collected_cs": len(collected),  # # Collecte # # Respect: debug | Étape: [E1] | Source: [S0]  # #
-        "count_after_theme_filter": len(filtered),  # # Après filtre # # Respect: debug | Étape: [E1] | Source: [S0]  # #
-        "items": filtered,  # # Items # # Respect: sortie structurée | Étape: [E1] | Source: [S1]  # #
-        "bundle_html_file": bundle_path,  # # HTML debug # # Respect: cache local (pas LLM) | Étape: [E2] | Source: [S2]  # #
-        "supported_fields": SUPPORTED_FIELDS,  # # Schéma # # Respect: contrat clair | Étape: [E1] | Source: [S1]  # #
+    result: Dict[str, Any] = {  # # Cette ligne crée le dictionnaire final “result” (contrat de sortie stable) que FastAPI/ton agent consommera sans surprise | Étape: [E1] | Source: [S1]  # #
+        "ok": (len(errors_global) == 0),  # # Cette ligne calcule le statut ok=True seulement si la liste errors_global est vide (si erreur globale => ok=False) pour signaler clairement un problème “global tool” | Étape: [E3] | Source: [S3]  # #
+        "user_query": user_query,  # # Cette ligne renvoie la requête utilisateur telle qu’utilisée, pour traçabilité et reproduction du test | Étape: [E1] | Source: [S0]  # #
+        "theme": theme,  # # Cette ligne renvoie le thème demandé (ou None), pour expliquer le filtrage appliqué | Étape: [E1] | Source: [S0]  # #
+        "allowed_subcats": allowed_subcats,  # # Cette ligne renvoie la liste de catégories autorisées, pour rendre le périmètre explicite côté API | Étape: [E1] | Source: [S0]  # #
+        "sort": sort,  # # Cette ligne renvoie le mode de tri utilisé (relevance ou date), pour traçabilité | Étape: [E1] | Source: [S0]  # #
+        "requested_max_results": max_results,  # # Cette ligne renvoie la limite demandée/normalisée, pour vérifier que l’outil respecte le “contrôle de volume” | Étape: [E1] | Source: [S0]  # #
+        "count_collected_cs": len(collected),  # # Cette ligne renvoie combien d’items ont été collectés depuis search/cs (avant filtrage), utile pour debug pagination | Étape: [E2] | Source: [S6]  # #
+        "count_after_theme_filter": len(filtered),  # # Cette ligne renvoie combien d’items restent après filtre thème/catégories/keywords, utile pour comprendre un résultat “trop faible” | Étape: [E2] | Source: [S6]  # #
+        "items": filtered,  # # Cette ligne renvoie la liste finale des items structurés (les données utiles), c’est le “payload principal” côté API | Étape: [E1] | Source: [S1]  # #
+        "bundle_html_file": bundle_path,  # # Cette ligne renvoie le chemin du bundle HTML écrit sur disque, pour inspection manuelle si le parsing casse (diagnostic) | Étape: [E2] | Source: [S2]  # #
+        "supported_fields": SUPPORTED_FIELDS,  # # Cette ligne renvoie le schéma des champs supportés, pour que l’API sache ce qui peut exister et ce qui peut manquer | Étape: [E1] | Source: [S1]  # #
+
         # Debug important
-        "project_root": PROJECT_ROOT,  # # Où est le projet # # Respect: traçabilité | Étape: [E1] | Source: [S0]  # #
-        "raw_cache_dir": data_lake_raw_dir,  # # Où écrit-on # # Respect: visibilité | Étape: [E2] | Source: [S2]  # #
-        "cwd_runtime": os.getcwd(),  # # CWD # # Respect: debug uvicorn | Étape: [E1] | Source: [S0]  # #
-        "last_search_url": last_search_url,  # # Dernière URL # # Respect: debug | Étape: [E1] | Source: [S0]  # #
-        "last_search_http": last_search_http,  # # Dernier code HTTP search (0 = erreur réseau) | Étape: [E2]# #  # # Dernier HTTP # # Respect: debug | Étape: [E2] | Source: [S3]  # #
-        "parse_diag_last": diag_last,  # # Dernier diag # # Respect: debug | Étape: [E2] | Source: [S6]  # #
-        "anti_bot_or_weird_page": anti_bot_or_weird_page,  # # Flag # # Respect: transparence | Étape: [E2] | Source: [S6]  # #
-    }  # # Fin result # # Respect: JSON propre | Étape: [E1] | Source: [S1]  # #
+        "project_root": PROJECT_ROOT,  # # Cette ligne renvoie la racine projet détectée, pour vérifier que l’outil écrit bien dans le bon projet (pas ailleurs) | Étape: [E1] | Source: [S0]  # #
+        "raw_cache_dir": data_lake_raw_dir,  # # Cette ligne renvoie le dossier où les fichiers sont réellement enregistrés, pour que tu retrouves facilement JSON/HTML | Étape: [E2] | Source: [S2]  # #
+        "cwd_runtime": os.getcwd(),  # # Cette ligne renvoie le répertoire courant d’exécution (CWD), utile car uvicorn peut changer le CWD et casser des chemins relatifs | Étape: [E1] | Source: [S0]  # #
+        "last_search_url": last_search_url,  # # Cette ligne renvoie la dernière URL appelée sur search/cs, pour reproduire exactement le cas qui a planté | Étape: [E2] | Source: [S6]  # #
+        "last_search_http": last_search_http,  # # Cette ligne renvoie le dernier code HTTP reçu sur search/cs (ex: 200, 429, 500) ; IMPORTANT: si tu vois 0, ça veut dire “erreur locale” (timeout/exception réseau) et PAS une réponse HTTP du site | Étape: [E3] | Source: [S3]  # #
+        "parse_diag_last": diag_last,  # # Cette ligne renvoie le dernier diagnostic de parsing (compte de noeuds, flags anti-bot, etc.) pour comprendre pourquoi items=[] | Étape: [E2] | Source: [S6]  # #
+        "anti_bot_or_weird_page": anti_bot_or_weird_page,  # # Cette ligne renvoie un booléen “on a détecté une page bizarre”, pour être transparent sur une cause type consent/robot | Étape: [E2] | Source: [S6]  # #
+    }  # # Cette ligne ferme le dict result, ce qui garantit que la sortie JSON est complète et structurée | Étape: [E1] | Source: [S1]  # #
 
-    json_name = f"scrape_arxiv_cs_{ts}.json"  # # Nom json # # Respect: cache résultat | Étape: [E2] | Source: [S2]  # #
-    json_path = os.path.join(data_lake_raw_dir, json_name)  # # Path # # Respect: cache local | Étape: [E2] | Source: [S2]  # #
-    with open(json_path, "w", encoding="utf-8") as f:  # # Open # # Respect: robustesse encodage | Étape: [E1] | Source: [S1]  # #
-        json.dump(result, f, ensure_ascii=False, indent=2)  # # Dump # # Respect: sortie structurée | Étape: [E1] | Source: [S1]  # #
+    json_name = f"scrape_arxiv_cs_{ts}.json"  # # Cette ligne construit le nom du fichier JSON (avec timestamp) pour versionner les résultats et éviter d’écraser un ancien test | Étape: [E2] | Source: [S2]  # #
+    json_path = os.path.join(data_lake_raw_dir, json_name)  # # Cette ligne construit le chemin complet du JSON dans le cache raw, pour enregistrer localement au bon endroit | Étape: [E2] | Source: [S2]  # #
+    with open(json_path, "w", encoding="utf-8") as f:  # # Cette ligne ouvre le fichier JSON en écriture UTF-8, pour éviter les soucis d’accents et garantir une sauvegarde lisible | Étape: [E1] | Source: [S1]  # #
+        json.dump(result, f, ensure_ascii=False, indent=2)  # # Cette ligne sérialise le dict result en JSON lisible (indent=2) sans échapper les caractères non-ASCII, pour debug facile | Étape: [E1] | Source: [S1]  # #
 
-    result["saved_to"] = json_path  # # Chemin # # Respect: retrouver facilement le fichier | Étape: [E1] | Source: [S1]  # #
-    return result  # # Retour # # Respect: contrat clair | Étape: [E1] | Source: [S0]  # #
-
-
-# ============================================================  # #  | Étape: [E1] | Source: [S0]  # #
-# ✅ Alias compatibilité avec ton main.py  # #  | Étape: [E1] | Source: [S0]  # #
-# ============================================================  # #  | Étape: [E1] | Source: [S0]  # #
-def scrape_arxiv_cs(  # # Alias # # Respect: ne pas casser ton main.py existant | Étape: [E1] | Source: [S0]  # #
-    query: str,  # # Query # # Respect: input simple | Étape: [E1] | Source: [S0]  # #
-    max_results: int = 50,  # # Limite # # Respect: contrôle volume | Étape: [E1] | Source: [S0]  # #
-    sort: str = "relevance",  # # Tri # # Respect: contrôle | Étape: [E1] | Source: [S0]  # #
-    polite_min_s: float = 1.2,  # # Politesse # # Respect: fréquence raisonnable | Étape: [E4] | Source: [S5]  # #
-    polite_max_s: float = 2.0,  # # Politesse # # Respect: fréquence raisonnable | Étape: [E4] | Source: [S5]  # #
-    data_lake_raw_dir: str = DEFAULT_RAW_DIR,  # # Cache # # Respect: écrit dans raw/cache | Étape: [E2] | Source: [S2]  # #
-    theme: Optional[str] = None,  # # Thème # # Respect: scope | Étape: [E1] | Source: [S0]  # #
-) -> Dict[str, Any]:  # # Retour structuré # # Respect: JSON | Étape: [E1] | Source: [S1]  # #
-    return scrape_arxiv_cs_scoped(  # # Forward # # Respect: point d'entrée unique | Étape: [E1] | Source: [S0]  # #
-        user_query=query,  # # Map # # Respect: cohérence | Étape: [E1] | Source: [S0]  # #
-        theme=theme,  # # Map # # Respect: cohérence | Étape: [E1] | Source: [S0]  # #
-        max_results=max_results,  # # Map # # Respect: cohérence | Étape: [E1] | Source: [S0]  # #
-        sort=sort,  # # Map # # Respect: cohérence | Étape: [E1] | Source: [S0]  # #
-        polite_min_s=polite_min_s,  # # Map # # Respect: cohérence | Étape: [E4] | Source: [S5]  # #
-        polite_max_s=polite_max_s,  # # Map # # Respect: cohérence | Étape: [E4] | Source: [S5]  # #
-        data_lake_raw_dir=data_lake_raw_dir,  # # Map # # Respect: cohérence | Étape: [E2] | Source: [S2]  # #
-        enrich_abs=True,  # # On enrichit # # Respect: utile (doi/versions/abstract) | Étape: [E1] | Source: [S0]  # #
-        enable_keyword_filter=True,  # # On garde fallback # # Respect: évite faux négatifs | Étape: [E2] | Source: [S6]  # #
-    )
+    result["saved_to"] = json_path  # # Cette ligne ajoute dans la sortie le chemin du JSON sauvegardé (super pratique pour l’API et pour toi) | Étape: [E1] | Source: [S1]  # #
+    return result  # # Cette ligne retourne le dict final (contrat stable) à l’appelant (main/FastAPI), sans side effect supplémentaire | Étape: [E1] | Source: [S0]  # #
 
 
 # ============================================================  # #  | Étape: [E1] | Source: [S0]  # #
-# ✅ TEST LOCAL  # #  | Étape: [E1] | Source: [S0]  # #
+# ✅ Alias compatibilité avec ton main.py                      # #  | Étape: [E1] | Source: [S0]  # #
 # ============================================================  # #  | Étape: [E1] | Source: [S0]  # #
-RUN_LOCAL_TEST = True  # # True = test ON # # Respect: debug local sans FastAPI | Étape: [E1] | Source: [S0]  # #
+def scrape_arxiv_cs(  # # Cette ligne définit une fonction “alias” (même nom que l’ancien scraper) pour ne pas casser ton main.py qui l’appelle peut-être encore | Étape: [E1] | Source: [S0]  # #
+    query: str,  # # Cette ligne définit le paramètre query (texte utilisateur) : c’est l’entrée principale de recherche | Étape: [E1] | Source: [S0]  # #
+    max_results: int = 50,  # # Cette ligne fixe la limite par défaut à 50 (1 page), pour éviter un scraping massif et rester dans la contrainte “PAGE_SIZE=50” | Étape: [E1] | Source: [S0]  # #
+    sort: str = "relevance",  # # Cette ligne définit le tri par défaut : pertinence, pour un comportement stable si l’utilisateur n’indique rien | Étape: [E1] | Source: [S0]  # #
+    polite_min_s: float = 1.2,  # # Cette ligne définit la pause minimale, pour ralentir entre requêtes et éviter un rythme robotique | Étape: [E4] | Source: [S5]  # #
+    polite_max_s: float = 2.0,  # # Cette ligne définit la pause maximale, pour ajouter du jitter (variabilité) et réduire le risque de blocage | Étape: [E4] | Source: [S5]  # #
+    data_lake_raw_dir: str = DEFAULT_RAW_DIR,  # # Cette ligne définit le dossier de cache raw par défaut, pour enregistrer localement dans data_lake/raw/cache | Étape: [E2] | Source: [S2]  # #
+    theme: Optional[str] = None,  # # Cette ligne définit un thème optionnel pour filtrer (ou None), ce qui garde l’API flexible | Étape: [E1] | Source: [S0]  # #
+) -> Dict[str, Any]:  # # Cette ligne annonce que la fonction retourne un dict JSON (contrat), pour que le reste du système puisse l’utiliser sans surprise | Étape: [E1] | Source: [S1]  # #
+    return scrape_arxiv_cs_scoped(  # # Cette ligne délègue à la fonction principale “scoped” (une seule implémentation) pour éviter la duplication de logique | Étape: [E1] | Source: [S0]  # #
+        user_query=query,  # # Cette ligne mappe query -> user_query (renommage), pour garder un contrat interne cohérent | Étape: [E1] | Source: [S0]  # #
+        theme=theme,  # # Cette ligne transmet le thème à la fonction principale, pour activer le filtrage thématique si fourni | Étape: [E1] | Source: [S0]  # #
+        max_results=max_results,  # # Cette ligne transmet max_results (limite), pour respecter le contrôle de volume demandé | Étape: [E1] | Source: [S0]  # #
+        sort=sort,  # # Cette ligne transmet le tri choisi, pour que la search URL reflète la préférence (relevance vs date) | Étape: [E1] | Source: [S0]  # #
+        polite_min_s=polite_min_s,  # # Cette ligne transmet la pause min, pour garder la politesse configurée par l’appelant | Étape: [E4] | Source: [S5]  # #
+        polite_max_s=polite_max_s,  # # Cette ligne transmet la pause max, pour garder la variabilité configurée par l’appelant | Étape: [E4] | Source: [S5]  # #
+        data_lake_raw_dir=data_lake_raw_dir,  # # Cette ligne transmet le dossier de cache, pour écrire les fichiers au bon endroit (local) | Étape: [E2] | Source: [S2]  # #
+        enrich_abs=True,  # # Cette ligne force enrich_abs=True : on enrichit /abs (doi/versions/abstract) car utile pour la qualité des résultats | Étape: [E1] | Source: [S0]  # #
+        enable_keyword_filter=True,  # # Cette ligne garde le keyword fallback, pour éviter des faux négatifs quand categories manquent ou sont instables | Étape: [E2] | Source: [S6]  # #
+    )  # # Cette ligne ferme l’appel forward, ce qui garantit que l’alias retourne exactement le même contrat que la fonction principale | Étape: [E1] | Source: [S1]  # #
 
-if __name__ == "__main__" and RUN_LOCAL_TEST:  # # Entry # # Respect: exécution locale maîtrisée | Étape: [E2] | Source: [S3]  # #
-    res = scrape_arxiv_cs_scoped(  # # Run # # Respect: test contrôlé | Étape: [E1] | Source: [S0]  # #
-        user_query="multimodal transformer misogyny detection",  # # Exemple # # Respect: besoin informationnel | Étape: [E1] | Source: [S0]  # #
-        theme="ai_ml",  # # Thème # # Respect: périmètre demandé | Étape: [E1] | Source: [S0]  # #
-        max_results=5,  # # Limite # # Respect: pas massif | Étape: [E1] | Source: [S0]  # #
-        sort="relevance",  # # Tri # # Respect: contrôle | Étape: [E1] | Source: [S0]  # #
-        data_lake_raw_dir=DEFAULT_RAW_DIR,  # # Cache # # Respect: écrit au bon endroit | Étape: [E2] | Source: [S2]  # #
-        enrich_abs=True,  # # Enrich # # Respect: utile | Étape: [E1] | Source: [S0]  # #
-    )  # # Fin # # Respect: test | Étape: [E1] | Source: [S0]  # #
-    print(json.dumps({  # # Print # # Respect: debug lisible | Étape: [E1] | Source: [S1]  # #
-        "count_collected_cs": res.get("count_collected_cs"),  # # Info # # Respect: debug | Étape: [E1] | Source: [S0]  # #
-        "count_after_theme_filter": res.get("count_after_theme_filter"),  # # Info # # Respect: debug | Étape: [E1] | Source: [S0]  # #
-        "saved_to": res.get("saved_to"),  # # Info # # Respect: retrouver JSON | Étape: [E1] | Source: [S1]  # #
-        "bundle_html_file": res.get("bundle_html_file"),  # # Info # # Respect: retrouver HTML | Étape: [E1] | Source: [S0]  # #
-        "anti_bot_or_weird_page": res.get("anti_bot_or_weird_page"),  # # Info # # Respect: transparence | Étape: [E2] | Source: [S6]  # #
-        "last_search_http": res.get("last_search_http"),  # # Info # # Respect: debug | Étape: [E2] | Source: [S3]  # #
-        "parse_diag_last": res.get("parse_diag_last"),  # # Info # # Respect: debug | Étape: [E2] | Source: [S6]  # #
-    }, ensure_ascii=False, indent=2))  # # Pretty # # Respect: lecture facile | Étape: [E1] | Source: [S0]  # #
+
+# ============================================================  # #  | Étape: [E1] | Source: [S0]  # #
+# ✅ TEST LOCAL                                               # #  | Étape: [E1] | Source: [S0]  # #
+# ============================================================  # #  | Étape: [E1] | Source: [S0]  # #
+RUN_LOCAL_TEST = True  # # Cette ligne active/désactive le test local : True = on peut lancer le fichier seul (sans FastAPI) pour valider rapidement le scraping | Étape: [E2] | Source: [S2]  # #
+
+if __name__ == "__main__" and RUN_LOCAL_TEST:  # # Cette ligne exécute un scénario de test seulement si on lance le script directement (pas importé), pour éviter des effets de bord | Étape: [E2] | Source: [S3]  # #
+    res = scrape_arxiv_cs_scoped(  # # Cette ligne lance la fonction principale en mode test (appel direct) pour vérifier la robustesse parsing + la sauvegarde cache | Étape: [E2] | Source: [S2]  # #
+        user_query="multimodal transformer misogyny detection",  # # Cette ligne définit une requête d’exemple (test reproductible) pour valider la chaîne search->abs->html | Étape: [E1] | Source: [S0]  # #
+        theme="ai_ml",  # # Cette ligne fixe un thème de test (ai_ml) pour vérifier le filtrage par catégories et/ou fallback keywords | Étape: [E1] | Source: [S0]  # #
+        max_results=5,  # # Cette ligne limite le test à 5 résultats, ce qui suffit pour valider sans “scraper trop” | Étape: [E1] | Source: [S0]  # #
+        sort="relevance",  # # Cette ligne fixe le tri pour le test, pour rendre les résultats plus stables et comparables entre runs | Étape: [E1] | Source: [S0]  # #
+        data_lake_raw_dir=DEFAULT_RAW_DIR,  # # Cette ligne indique où écrire les fichiers du test, pour retrouver facilement JSON + bundle HTML | Étape: [E2] | Source: [S2]  # #
+        enrich_abs=True,  # # Cette ligne active l’enrichissement /abs et /html, pour tester aussi method/references et pas seulement le search | Étape: [E5] | Source: [S8]  # #
+    )  # # Cette ligne ferme l’appel test, ce qui garantit que res contient le dict “result” complet (contrat) | Étape: [E1] | Source: [S1]  # #
+
+    print(json.dumps({  # # Cette ligne affiche un sous-ensemble des champs en JSON pretty, pour vérifier vite “ça marche” sans ouvrir le gros fichier complet | Étape: [E2] | Source: [S2]  # #
+        "count_collected_cs": res.get("count_collected_cs"),  # # Cette ligne affiche combien d’items ont été collectés sur search/cs, utile pour valider pagination/selector | Étape: [E2] | Source: [S6]  # #
+        "count_after_theme_filter": res.get("count_after_theme_filter"),  # # Cette ligne affiche combien d’items restent après filtrage, utile pour valider theme+keywords | Étape: [E2] | Source: [S6]  # #
+        "saved_to": res.get("saved_to"),  # # Cette ligne affiche le chemin du JSON, pour que tu puisses l’ouvrir directement sans chercher | Étape: [E2] | Source: [S2]  # #
+        "bundle_html_file": res.get("bundle_html_file"),  # # Cette ligne affiche le chemin du bundle HTML, pour inspecter le HTML si un parsing est vide | Étape: [E2] | Source: [S2]  # #
+        "anti_bot_or_weird_page": res.get("anti_bot_or_weird_page"),  # # Cette ligne affiche le flag anti-bot/weird, pour savoir si arXiv a renvoyé une page de blocage/consent | Étape: [E2] | Source: [S6]  # #
+        "last_search_http": res.get("last_search_http"),  # # Cette ligne affiche le dernier code HTTP search ; rappel: 0 = exception réseau locale (pas un HTTP du site) | Étape: [E3] | Source: [S3]  # #
+        "parse_diag_last": res.get("parse_diag_last"),  # # Cette ligne affiche le dernier diagnostic de parsing (counts/flags) pour comprendre un résultat vide | Étape: [E2] | Source: [S6]  # #
+    }, ensure_ascii=False, indent=2))  # # Cette ligne force un JSON lisible (indent) et conserve les accents (ensure_ascii=False) pour un debug confortable | Étape: [E1] | Source: [S1]  # #

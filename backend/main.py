@@ -293,3 +293,49 @@ def ask(req: AskRequest) -> Dict[str, Any]:  # # Handler # # Étape: ORCHESTRATI
 # ==========================
 # End scrapping main
 # ==========================
+
+
+# ============================================================  # #
+# 📧 Email endpoint (local MailHog)                              # #
+# - POST /send-email                                             # #
+# ============================================================  # #
+
+from typing import Any, Dict, List, Optional  # # Typage # #
+from pydantic import BaseModel, Field  # # Validation payload # #
+
+try:  # # Import robuste du module email # #
+    from module_Email.email_tool import send_conversation_email  # # Envoi email (local) # #
+except Exception as e:  # # Si import échoue # #
+    send_conversation_email = None  # # Placeholder # #
+    _EMAIL_IMPORT_ERROR = str(e)  # # Détail erreur # #
+
+
+class ConversationMessage(BaseModel):  # # Un message de conversation # #
+    role: str = Field(..., description="user|assistant")  # # Rôle # #
+    content: str = Field(..., description="Contenu du message")  # # Texte # #
+    timestamp: Optional[str] = Field(default=None, description="ISO timestamp optionnel")  # # Date optionnelle # #
+
+
+class SendEmailRequest(BaseModel):  # # Payload du endpoint # #
+    recipient_email: str = Field(..., description="Email destinataire")  # # Email # #
+    conversation_history: List[ConversationMessage] = Field(..., description="Historique conversation")  # # Liste messages # #
+    subject: Optional[str] = Field(default="Conversation DIXITBOT", description="Sujet email")  # # Sujet # #
+
+
+@app.post("/send-email")  # # Endpoint POST # #
+def send_email(req: SendEmailRequest) -> Dict[str, Any]:  # # Handler # #
+    if send_conversation_email is None:  # # Si module non importé # #
+        return {  # # Retour KO # #
+            "ok": False,  # # KO # #
+            "error": "EMAIL_MODULE_IMPORT_ERROR",  # # Code erreur # #
+            "detail": _EMAIL_IMPORT_ERROR,  # # Détail # #
+        }
+
+    payload = [m.model_dump() for m in req.conversation_history]  # # Convertit Pydantic -> dict # #
+    return send_conversation_email(  # # Appelle l’outil email # #
+        recipient_email=req.recipient_email,  # # Destinataire # #
+        conversation_history=payload,  # # Messages # #
+        subject=req.subject or "Conversation DIXITBOT",  # # Sujet # #
+    )
+ 
+#-----------END EMAIL MAIL----------------------------

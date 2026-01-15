@@ -17,13 +17,23 @@ Il repose sur une architecture en **4 couches** :
 - **Frontend** : HTML / CSS / JavaScript  
 - **Backend** : Python + FastAPI  
 - **IA locale** : Ollama + modèle `qwen2.5:1.5b`  
-- **Tooling** : scraping de données publiques (site cell.com)  
+- **Tooling** : 
+Module : scraping de données publiques (site cell.com)  
     _ Le JSON = ton résultat structuré final (ce que tu veux exploiter).
     _ Le HTML = une copie brute du GET (preuve + debug).
         Ça sert à :
         vérifier que le scraping a bien récupéré la bonne page
         comprendre pourquoi un champ manque (sélecteur faux, page différente, etc.)
         garder une trace reproductible (consigne prof souvent appréciée)
+
+Module Email :  Installer MailHog sur Windows
+Option 1 : Installation simple (recommandé)
+
+Téléchargez MailHog pour Windows : Mailhog 1.0.1 : MailHog_windows_amd64.exe:
+
+Allez sur : https://github.com/mailhog/MailHog/releases
+Téléchargez MailHog_windows_amd64.exe
+
 - **Communication** : API REST  
 
 ## Flux agentique
