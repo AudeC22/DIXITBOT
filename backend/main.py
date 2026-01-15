@@ -335,7 +335,7 @@ def send_email(req: SendEmailRequest) -> Dict[str, Any]:  # # Handler # #
     return send_conversation_email(  # # Appelle l’outil email # #
         recipient_email=req.recipient_email,  # # Destinataire # #
         conversation_history=payload,  # # Messages # #
-        subject=req.subject or "Conversation DIXITBOT",  # # Sujet # #
+        subject=req.subject or "Conversation DIXITBOT",  # # Sujet du message # #
     )
  
 #-----------END EMAIL MAIL----------------------------
