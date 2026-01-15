@@ -1,0 +1,89 @@
+{
+  "ok": true,
+  "user_query": "multimodal transformer misogyny detection",
+  "theme": "ai_ml",
+  "allowed_subcats": [
+    "cs.AI",
+    "cs.LG",
+    "cs.CL",
+    "cs.CV",
+    "cs.MA",
+    "cs.NE",
+    "stat.ML",
+    "eess.IV"
+  ],
+  "sort": "relevance",
+  "requested_max_results": 5,
+  "count_collected_cs": 1,
+  "count_after_theme_filter": 1,
+  "items": [
+    {
+      "arxiv_id": "2601.08457",
+      "title": "An Under-Explored Application for Explainable Multimodal Misogyny Detection in code-mixed Hindi-English",
+      "authors": [
+        "Sargam Yadav",
+        "Abhishek Kaushik",
+        "Kevin Mc Daid"
+      ],
+      "abstract": "Digital platforms have an ever-expanding user base, and act as a hub for communication, business, and connectivity. However, this has also allowed for the spread of hate speech and misogyny . Artificial intelligence models have emerged as an effective solution for countering online hate speech but are under explored for low resource and code-mixed languages and suffer from a lack of interpretability. Explainable Artificial Intelligence (XAI) can enhance transparency in the decisions of deep learning models, which is crucial for a sensitive domain such as hate speech detection . In this paper, we present a multi-modal and explainable web application for detecting misogyny in text and memes in code-mixed Hindi and English. The system leverages state-of-the-art transformer -based models that support multilingual and multimodal settings. For text-based misogyny identification, the system utilizes XLM-RoBERTa (XLM-R) and multilingual Bidirectional Encoder Representations from Transformers (mBERT) on a dataset of approximately 4,193 comments. For multimodal misogyny identification from memes, the system utilizes mBERT + EfficientNet, and mBERT + ResNET trained on a dataset of approximately 4,218 memes. It also provides feature importance scores using explainability techniques including Shapley Additive Values (SHAP) and Local Interpretable Model Agnostic Explanations (LIME). The application aims to serve as a tool for both researchers and content moderators, to promote further research in the field, combat gender based digital violence, and ensure a safe digital space. The system has been evaluated using human evaluators who provided their responses on Chatbot Usability Questionnaire (CUQ) and User Experience Questionnaire (UEQ) to determine overall usability.",
+      "method": "",
+      "references": [],
+      "submitted_date": "13 January, 2026",
+      "abs_url": "https://arxiv.org/abs/2601.08457",
+      "pdf_url": "https://arxiv.org/pdf/2601.08457",
+      "primary_category": "cs.AI",
+      "all_categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "doi": "",
+      "versions": [],
+      "last_updated_raw": "",
+      "errors": [],
+      "missing_fields": [
+        "method",
+        "references",
+        "doi",
+        "versions",
+        "last_updated_raw",
+        "missing_fields",
+        "errors"
+      ]
+    }
+  ],
+  "bundle_html_file": "c:\\Users\\audec\\Documents\\GitHub\\DIXITBOT\\data_lake\\raw\\cache\\scrape_arxiv_cs_bundle_20260115_112321.html",
+  "supported_fields": [
+    "arxiv_id",
+    "title",
+    "authors",
+    "abstract",
+    "method",
+    "references",
+    "submitted_date",
+    "abs_url",
+    "pdf_url",
+    "doi",
+    "versions",
+    "last_updated_raw",
+    "primary_category",
+    "all_categories",
+    "missing_fields",
+    "errors"
+  ],
+  "project_root": "c:\\Users\\audec\\Documents\\GitHub\\DIXITBOT",
+  "raw_cache_dir": "c:\\Users\\audec\\Documents\\GitHub\\DIXITBOT\\data_lake\\raw\\cache",
+  "cwd_runtime": "C:\\Users\\audec\\Documents\\GitHub\\DIXITBOT",
+  "last_search_url": "https://arxiv.org/search/cs?query=multimodal%20transformer%20misogyny%20detection&searchtype=all&abstracts=show&size=50&start=0",
+  "last_search_http": 200,
+  "parse_diag_last": {
+    "page_title": "Search | arXiv e-print repository",
+    "has_abs_links": true,
+    "contains_we_are_sorry": false,
+    "contains_robot": false,
+    "contains_captcha": false,
+    "contains_consent": false,
+    "contains_no_results": false,
+    "selector_count_arxiv_result": 1
+  },
+  "anti_bot_or_weird_page": false
+}
