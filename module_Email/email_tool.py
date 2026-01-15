@@ -2,6 +2,7 @@
 # 📧 Email Tool (LOCAL SMTP via MailHog)                         # #
 # - Objectif: envoyer l'historique d'une conversation par email  # #
 # - Cible: serveur SMTP local (MailHog: 127.0.0.1:1025)          # #
+# Envoi Email version brut et email version jolie html
 # ============================================================  # #
 
 from __future__ import annotations  # # Active annotations forward (py3.10+) # #
