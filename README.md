@@ -29,7 +29,7 @@ Module : scraping de données publiques (site cell.com)
 Module Email :  Installer MailHog sur Windows
 Option 1 : Installation simple (recommandé)
 
-Téléchargez MailHog pour Windows : Mailhog 1.0.1 : MailHog_windows_amd64.exe:
+Téléchargez MailHog pour Windows : Mailhog 1.0.1 : MailHog_windows_amd64.exe
 
 Allez sur : https://github.com/mailhog/MailHog/releases
 Téléchargez MailHog_windows_amd64.exe
