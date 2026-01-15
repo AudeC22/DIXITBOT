@@ -26,6 +26,8 @@
         "Kevin Mc Daid"
       ],
       "abstract": "Digital platforms have an ever-expanding user base, and act as a hub for communication, business, and connectivity. However, this has also allowed for the spread of hate speech and misogyny . Artificial intelligence models have emerged as an effective solution for countering online hate speech but are under explored for low resource and code-mixed languages and suffer from a lack of interpretability. Explainable Artificial Intelligence (XAI) can enhance transparency in the decisions of deep learning models, which is crucial for a sensitive domain such as hate speech detection . In this paper, we present a multi-modal and explainable web application for detecting misogyny in text and memes in code-mixed Hindi and English. The system leverages state-of-the-art transformer -based models that support multilingual and multimodal settings. For text-based misogyny identification, the system utilizes XLM-RoBERTa (XLM-R) and multilingual Bidirectional Encoder Representations from Transformers (mBERT) on a dataset of approximately 4,193 comments. For multimodal misogyny identification from memes, the system utilizes mBERT + EfficientNet, and mBERT + ResNET trained on a dataset of approximately 4,218 memes. It also provides feature importance scores using explainability techniques including Shapley Additive Values (SHAP) and Local Interpretable Model Agnostic Explanations (LIME). The application aims to serve as a tool for both researchers and content moderators, to promote further research in the field, combat gender based digital violence, and ensure a safe digital space. The system has been evaluated using human evaluators who provided their responses on Chatbot Usability Questionnaire (CUQ) and User Experience Questionnaire (UEQ) to determine overall usability.",
+      "method": "",
+      "references": [],
       "submitted_date": "13 January, 2026",
       "abs_url": "https://arxiv.org/abs/2601.08457",
       "pdf_url": "https://arxiv.org/pdf/2601.08457",
@@ -39,6 +41,8 @@
       "last_updated_raw": "",
       "errors": [],
       "missing_fields": [
+        "method",
+        "references",
         "doi",
         "versions",
         "last_updated_raw",
@@ -47,12 +51,14 @@
       ]
     }
   ],
-  "bundle_html_file": "c:\\Users\\audec\\Documents\\GitHub\\DIXITBOT\\data_lake\\raw\\cache\\scrape_arxiv_cs_bundle_20260114_201337.html",
+  "bundle_html_file": "c:\\Users\\audec\\Documents\\GitHub\\DIXITBOT\\data_lake\\raw\\cache\\scrape_arxiv_cs_bundle_20260115_112321.html",
   "supported_fields": [
     "arxiv_id",
     "title",
     "authors",
     "abstract",
+    "method",
+    "references",
     "submitted_date",
     "abs_url",
     "pdf_url",
