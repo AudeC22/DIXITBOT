@@ -1,0 +1,303 @@
+{
+  "domain": {
+    "id": "computer_science",
+    "label_fr": "Informatique",
+    "label_en": "Computer Science"
+  },
+
+  "description": "Base de connaissances fixe utilisée par l’agent pour expliquer des concepts fondamentaux, soutenir une interaction conversationnelle et décider quand des outils externes sont nécessaires.",
+
+  "scope": "Prototype académique – assistant conversationnel de recherche",
+
+  "target_users": [
+    "étudiants",
+    "débutants en recherche",
+    "utilisateurs non experts"
+  ],
+
+  "agent_persona": {
+    "name": "Dixit",
+    "role": "Assistant conversationnel de recherche en informatique",
+    "tone": "pédagogique, clair et accessible",
+    "behavior": [
+      "explique les concepts de manière simple",
+      "reformule les questions imprécises",
+      "guide l’utilisateur vers des sujets de recherche",
+      "reconnaît ses limites"
+    ]
+  },
+
+  "capabilities": [
+    "expliquer des concepts fondamentaux en informatique et en IA",
+    "soutenir des échanges conversationnels pédagogiques",
+    "aider à formuler et préciser des questions de recherche",
+    "décider si une question nécessite l’utilisation d’outils externes"
+  ],
+
+  "small_talk": {
+    "objectifs": [
+      "accueillir l’utilisateur",
+      "clarifier l’intention de la question",
+      "expliquer le rôle et le fonctionnement de l’agent",
+      "orienter la conversation vers des sujets académiques pertinents"
+    ],
+    "sujets_autorises": [
+      "salutations",
+      "présentation de l’agent",
+      "explication de son fonctionnement",
+      "aide à la formulation des questions"
+    ],
+    "sujets_interdits": [
+      "opinions personnelles",
+      "soutien émotionnel",
+      "bavardage non académique"
+    ],
+    "intentions_exemples": [
+      "bonjour",
+      "qui es-tu",
+      "que peux-tu faire",
+      "comment poser une bonne question"
+    ]
+  },
+
+  "research_methodology": {
+    "label_fr": "Méthodologie de recherche scientifique",
+    "label_en": "Scientific Research Methodology",
+
+    "description_fr": "Cette section fournit des repères méthodologiques pour comprendre et mener une recherche scientifique en informatique, depuis la formulation d’une question jusqu’à l’analyse des résultats.",
+
+    "objectifs": [
+      "aider les étudiants à comprendre le processus de recherche",
+      "structurer une démarche scientifique",
+      "accompagner la formulation de sujets de recherche"
+    ],
+
+    "core_steps": [
+      {
+        "step_id": "problem_definition",
+        "label_fr": "Définition du problème",
+        "description_fr": "Identifier un problème précis, formuler une question de recherche claire et délimiter le périmètre de l’étude."
+      },
+      {
+        "step_id": "literature_review",
+        "label_fr": "Revue de littérature",
+        "description_fr": "Analyser les travaux existants afin de comprendre l’état de l’art, les approches utilisées et les limites actuelles."
+      },
+      {
+        "step_id": "methodology",
+        "label_fr": "Choix de la méthodologie",
+        "description_fr": "Définir les méthodes, modèles, algorithmes ou expérimentations permettant de répondre à la question de recherche."
+      },
+      {
+        "step_id": "experimentation",
+        "label_fr": "Expérimentation et évaluation",
+        "description_fr": "Mettre en œuvre la méthodologie, collecter des données et évaluer les résultats à l’aide de métriques appropriées."
+      },
+      {
+        "step_id": "analysis",
+        "label_fr": "Analyse des résultats",
+        "description_fr": "Interpréter les résultats, comparer avec les travaux existants et identifier les apports et limites de l’étude."
+      },
+      {
+        "step_id": "communication",
+        "label_fr": "Communication scientifique",
+        "description_fr": "Rédiger et présenter les résultats sous forme d’article, rapport ou présentation académique."
+      }
+    ],
+
+    "common_concepts": [
+      {
+        "concept_id": "state_of_the_art",
+        "label_fr": "État de l’art",
+        "description_fr": "Synthèse critique des travaux existants sur un sujet donné."
+      },
+      {
+        "concept_id": "research_question",
+        "label_fr": "Question de recherche",
+        "description_fr": "Question précise à laquelle la recherche cherche à répondre."
+      },
+      {
+        "concept_id": "evaluation_metrics",
+        "label_fr": "Métriques d’évaluation",
+        "description_fr": "Indicateurs permettant de mesurer les performances ou la qualité d’une approche."
+      },
+      {
+        "concept_id": "reproducibility",
+        "label_fr": "Reproductibilité",
+        "description_fr": "Capacité à reproduire des résultats à partir des mêmes données et méthodes."
+      }
+    ],
+
+    "example_questions_fr": [
+      "Comment choisir un sujet de recherche en informatique ?",
+      "Comment faire une revue de littérature efficace ?",
+      "Quelle est la différence entre un article de recherche et un survey ?",
+      "Comment évaluer une méthode scientifique ?",
+      "Comment rédiger un article scientifique ?"
+    ],
+
+    "tool_usage_policy": {
+      "scraping_required": false,
+      "reason": "Les principes méthodologiques sont stables et peuvent être expliqués sans recours à des sources externes dynamiques."
+    }
+  },
+
+  "theme_definitions": [
+    {
+      "theme_id": "ai_ml",
+      "label_en": "Artificial Intelligence & Machine Learning",
+      "label_fr": "Intelligence artificielle & Machine Learning",
+      "description_fr": "L’intelligence artificielle regroupe les méthodes permettant à des systèmes informatiques de percevoir, apprendre, raisonner et agir. Elle inclut l’apprentissage automatique, les réseaux neuronaux, les modèles de langage, la vision par ordinateur et les agents intelligents.",
+      "keywords_seed_en": [
+        "artificial intelligence",
+        "machine learning",
+        "deep learning",
+        "large language models",
+        "LLM",
+        "AI agents",
+        "multimodal AI"
+      ],
+      "subtopics_seed_en": [
+        "Supervised learning",
+        "Unsupervised learning",
+        "Reinforcement learning",
+        "Large Language Models",
+        "Computer Vision",
+        "Multimodal systems",
+        "AI agents"
+      ],
+      "example_questions_fr": [
+        "Quels sont les grands domaines de l’intelligence artificielle ?",
+        "Quelle est la différence entre machine learning et deep learning ?",
+        "Quels sont les usages actuels des LLMs ?",
+        "Quels sujets de recherche récents en IA sont prometteurs ?"
+      ]
+    },
+
+    {
+      "theme_id": "algorithms_data_structures",
+      "label_en": "Algorithms & Data Structures",
+      "label_fr": "Algorithmique & Structures de données",
+      "description_fr": "Ce domaine étudie la conception, l’analyse et l’optimisation des algorithmes ainsi que les structures de données utilisées pour organiser et manipuler l’information de manière efficace.",
+      "keywords_seed_en": [
+        "algorithms",
+        "data structures",
+        "computational complexity",
+        "graph algorithms",
+        "optimization"
+      ],
+      "subtopics_seed_en": [
+        "Sorting algorithms",
+        "Graph algorithms",
+        "Dynamic programming",
+        "Computational complexity"
+      ],
+      "example_questions_fr": [
+        "Qu’est-ce que la complexité algorithmique ?",
+        "Quels algorithmes sont utilisés pour les graphes ?",
+        "Comment comparer deux algorithmes ?"
+      ]
+    },
+
+    {
+      "theme_id": "networks_systems",
+      "label_en": "Networks & Systems",
+      "label_fr": "Réseaux & Systèmes",
+      "description_fr": "Les réseaux et systèmes informatiques couvrent la communication entre machines, les systèmes distribués, les systèmes d’exploitation et les infrastructures cloud.",
+      "keywords_seed_en": [
+        "computer networks",
+        "distributed systems",
+        "operating systems",
+        "cloud computing",
+        "internet architecture"
+      ],
+      "subtopics_seed_en": [
+        "TCP/IP",
+        "Distributed computing",
+        "Cloud computing",
+        "Operating systems"
+      ],
+      "example_questions_fr": [
+        "Comment fonctionne Internet ?",
+        "Qu’est-ce qu’un système distribué ?",
+        "Quelle est la différence entre cloud et edge computing ?"
+      ]
+    },
+
+    {
+      "theme_id": "cybersecurity_cryptography",
+      "label_en": "Cybersecurity & Cryptography",
+      "label_fr": "Cybersécurité & Cryptographie",
+      "description_fr": "La cybersécurité vise à protéger les systèmes, les réseaux et les données contre les attaques. La cryptographie fournit les mécanismes garantissant la confidentialité, l’intégrité et l’authentification.",
+      "keywords_seed_en": [
+        "cybersecurity",
+        "cryptography",
+        "network security",
+        "privacy",
+        "authentication"
+      ],
+      "subtopics_seed_en": [
+        "Encryption",
+        "Public key cryptography",
+        "Network security",
+        "Malware"
+      ],
+      "example_questions_fr": [
+        "Qu’est-ce que la cryptographie asymétrique ?",
+        "Quels sont les principaux types d’attaques informatiques ?",
+        "Comment protéger les données personnelles ?"
+      ]
+    },
+
+    {
+      "theme_id": "programming_software_engineering",
+      "label_en": "Programming Languages & Software Engineering",
+      "label_fr": "Langages & Génie logiciel",
+      "description_fr": "Le génie logiciel et la programmation concernent la conception, le développement, la maintenance et l’évolution de logiciels fiables et maintenables.",
+      "keywords_seed_en": [
+        "programming languages",
+        "software engineering",
+        "software architecture",
+        "testing",
+        "compilers"
+      ],
+      "subtopics_seed_en": [
+        "Software design patterns",
+        "Agile development",
+        "Testing and validation",
+        "Programming paradigms"
+      ],
+      "example_questions_fr": [
+        "Qu’est-ce que le génie logiciel ?",
+        "Comment concevoir une architecture logicielle robuste ?",
+        "Quelles sont les bonnes pratiques de programmation ?"
+      ]
+    },
+
+    {
+      "theme_id": "human_data_interaction",
+      "label_en": "Human–Computer Interaction & Data",
+      "label_fr": "Interaction & Données",
+      "description_fr": "Ce domaine étudie les interactions entre les humains, les systèmes informatiques et les données, incluant l’ergonomie, l’expérience utilisateur et la visualisation de données.",
+      "keywords_seed_en": [
+        "human-computer interaction",
+        "data visualization",
+        "information retrieval",
+        "databases",
+        "multimedia"
+      ],
+      "subtopics_seed_en": [
+        "User experience design",
+        "Data visualization",
+        "Information retrieval",
+        "Database systems"
+      ],
+      "example_questions_fr": [
+        "Qu’est-ce que l’interaction homme-machine ?",
+        "Comment améliorer l’expérience utilisateur d’un système ?",
+        "Comment visualiser des données complexes ?"
+      ]
+    }
+  ]
+}
+
