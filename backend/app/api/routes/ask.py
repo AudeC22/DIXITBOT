@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
-from app.services.kb_service import search_kb
+from app.services.kb_service import search_kb  # Remplacez par import absolu si nécessaire
 from app.services.scrape_service import scrape_arxiv
 from app.services.prompt_service import build_kb_context, build_arxiv_context, build_strict_prompt
 from app.services.llm_service import ollama_generate
@@ -107,3 +107,8 @@ def ask(req: AskRequest) -> Dict[str, Any]:
         }
 
     return out
+
+@router.post("/ask")
+def ask_question(query: str):
+    results = search_kb(query)
+    return {"query": query, "results": results}

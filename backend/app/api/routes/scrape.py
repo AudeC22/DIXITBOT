@@ -19,3 +19,9 @@ class ArxivScrapeRequest(BaseModel):
 def scrape_arxiv_route(req: ArxivScrapeRequest) -> Dict[str, Any]:
     sort = "relevance" if req.sort == "relevance" else "submitted_date"
     return scrape_arxiv(query=req.query, theme=req.theme, max_results=req.max_results, sort=sort)
+
+
+@router.post("/scrape")
+def scrape_url(url: str):
+    # Placeholder : implémentez le scraping réel
+    return {"message": f"Scraping de {url} simulé"}

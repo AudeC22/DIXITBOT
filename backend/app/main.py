@@ -18,19 +18,34 @@ def create_app() -> FastAPI:
     )
 
     # Import des routers ici (évite certains soucis d'import circulaire)
-    from app.api.routes.health import router as health_router
-    from app.api.routes.scrape import router as scrape_router
-    from app.api.routes.ask import router as ask_router
-    from app.api.routes.kb import router as kb_router
+    try:
+        from app.api.routes.health import router as health_router
+        app.include_router(health_router, tags=["health"])
+    except ImportError:
+        pass  # Route manquante, à créer
+
+    try:
+        from app.api.routes.scrape import router as scrape_router
+        app.include_router(scrape_router, prefix="/scrape", tags=["scrape"])
+    except ImportError:
+        pass
+
+    try:
+        from app.api.routes.ask import router as ask_router
+        app.include_router(ask_router, tags=["ask"])
+    except ImportError:
+        pass
+
+    try:
+        from app.api.routes.kb import router as kb_router
+        app.include_router(kb_router, prefix="/kb", tags=["kb"])
+    except ImportError:
+        pass
+
     # plus tard si tu ajoutes :
     # from app.api.routes.mcp import router as mcp_router
     # from app.api.routes.analytics import router as analytics_router
 
-    # Montage des routes
-    app.include_router(health_router, tags=["health"])
-    app.include_router(scrape_router, prefix="/scrape", tags=["scrape"])
-    app.include_router(ask_router, tags=["ask"])
-    app.include_router(kb_router, prefix="/kb", tags=["kb"])
     # plus tard :
     # app.include_router(mcp_router, prefix="/mcp", tags=["mcp"])
     # app.include_router(analytics_router, prefix="/analytics", tags=["analytics"])
@@ -46,4 +61,3 @@ if __name__ == "__main__":
         port=51234,
         reload=True,
     )
-

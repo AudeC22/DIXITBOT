@@ -262,3 +262,9 @@ def kb_search(payload: KBQuery) -> Dict[str, Any]:
         "fallback_required": len(results) == 0,
         "results": results,
     }
+
+
+@router.get("/kb/search")
+def search_kb_endpoint(query: str):
+    # Placeholder : intégrez la recherche KB
+    return {"query": query, "results": []}
