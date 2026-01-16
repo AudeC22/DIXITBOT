@@ -20,25 +20,25 @@ def create_app() -> FastAPI:
     # Import des routers ici (évite certains soucis d'import circulaire)
     try:
         from app.api.routes.health import router as health_router
-        app.include_router(health_router, tags=["health"])
+        app.include_router(health_router, prefix="/api", tags=["health"])
     except ImportError:
         pass  # Route manquante, à créer
 
     try:
         from app.api.routes.scrape import router as scrape_router
-        app.include_router(scrape_router, prefix="/scrape", tags=["scrape"])
+        app.include_router(scrape_router, prefix="/api", tags=["scrape"])
     except ImportError:
         pass
 
     try:
         from app.api.routes.ask import router as ask_router
-        app.include_router(ask_router, tags=["ask"])
+        app.include_router(ask_router, prefix="/api", tags=["ask"])
     except ImportError:
         pass
 
     try:
         from app.api.routes.kb import router as kb_router
-        app.include_router(kb_router, prefix="/kb", tags=["kb"])
+        app.include_router(kb_router, prefix="/api/kb", tags=["kb"])
     except ImportError:
         pass
 

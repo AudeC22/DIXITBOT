@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIXIT BOT — Assistant de revue de littérature (arXiv + Semantic Scholar)</title>
+    <meta name="description"
+        content="DIXIT BOT aide doctorants et chercheurs à accélérer la revue de littérature en informatique avec des synthèses structurées et des citations (arXiv + Semantic Scholar)." />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <a class="skip-link" href="#chat">Aller au chatbot</a>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="header-left" aria-label="Logo DIXIT BOT">
+                <div class="logo" aria-hidden="true">D</div>
+            </div>
+
+            <div class="header-center" aria-label="Titre du site">
+                <div class="brand-name">DIXIT BOT</div>
+                <div class="brand-tagline">
+                    Assistant de revue de littérature scientifique en informatique
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="hero hero-full" aria-label="Présentation">
+            <div class="container">
+                <div class="hero-copy">
+                    <h1>Accélérez votre analyse de revue.</h1>
+
+                    <p class="lead">
+                        Assistant IA dédié aux doctorants et chercheurs pour analyser la littérature scientifique
+                        et produire des synthèses structurées avec citations.
+                    </p>
+
+                    <ul class="badges" aria-label="Points clés">
+                        <li>🎓 Pensé pour doctorants & chercheurs</li>
+                        <li>🧠 Spécialisé en informatique</li>
+                        <li>📚 Sources ouvertes : arXiv + Semantic Scholar</li>
+                    </ul>
+
+                    <div class="hero-cta">
+                        <a class="btn btn-primary" href="#chat" id="ctaToChat">
+                            Lancer une recherche maintenant
+                        </a>
+                        <p class="microcopy">Sans inscription — données issues de sources ouvertes</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="examples" aria-label="Exemples de requêtes">
+            <div class="container">
+                <div class="examples-card">
+                    <h2 class="panel-title">Exemples de requêtes</h2>
+
+                    <div class="chips" role="list">
+                        <button class="chip" type="button"
+                            data-prompt="Quels sont les travaux clés sur la détection d'hallucinations dans les LLMs ? Donne des citations arXiv et Semantic Scholar.">
+                            Hallucinations LLM
+                        </button>
+
+                        <button class="chip" type="button"
+                            data-prompt="Compare LoRA, QLoRA et full fine-tuning : avantages, limites, cas d’usage. Cite des papiers (arXiv + Semantic Scholar).">
+                            Fine-tuning
+                        </button>
+
+                        <button class="chip" type="button"
+                            data-prompt="Je prépare un état de l’art sur l’évaluation des LLMs. Propose un plan et des axes de lecture, avec citations.">
+                            Plan d’état de l’art
+                        </button>
+                    </div>
+
+                    <p class="panel-note">
+                        Astuce : précise le sous-domaine, la période, les méthodes, et les métriques.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="how" aria-label="Comment ça marche">
+            <div class="container">
+                <h2>Comment DIXIT vous fait gagner du temps</h2>
+
+                <ol class="steps">
+                    <li>
+                        <h3>Posez votre question de revue de littérature</h3>
+                        <p>Formulez une problématique, un thème ou un mot-clé scientifique.</p>
+                    </li>
+                    <li>
+                        <h3>Analyse des sources ouvertes</h3>
+                        <p>DIXIT s’appuie sur arXiv et Semantic Scholar pour retrouver des travaux pertinents.</p>
+                    </li>
+                    <li>
+                        <h3>Synthèse structurée avec citations</h3>
+                        <p>Vous obtenez un résumé clair, des axes, et des références exploitables.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="chat" id="chat" aria-label="Chatbot">
+            <div class="container">
+                <div class="chat-header">
+                    <div class="chat-headline">
+                        <h2>Chatbot DIXIT</h2>
+
+                        <div class="chat-head-actions">
+                            <button class="btn btn-ghost" type="button" id="shareBtn">
+                                Partager l’historique
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="hint">
+                        Décris ton sujet (domaine, période, méthodes). DIXIT répond avec une synthèse et des citations
+                        (arXiv + Semantic Scholar).
+                    </p>
+                </div>
+
+                <div class="chat-shell" role="application" aria-label="Interface de conversation">
+                    <div class="chat-messages" id="messages" aria-live="polite" aria-relevant="additions">
+                        <div class="msg msg-bot">
+                            <div class="msg-meta">DIXIT</div>
+                            <div class="msg-bubble">
+                                Bonjour ! Donne-moi ton sujet de recherche (problématique, mots-clés, contraintes),
+                                et je te propose une synthèse structurée avec citations.
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="chat-input" id="chatForm">
+                        <label class="sr-only" for="userInput">Votre message</label>
+
+                        <textarea id="userInput" rows="2"
+                            placeholder="Ex : Je fais une revue de littérature sur la détection d’anomalies en séries temporelles. Peux-tu proposer un plan et citer des papiers ?"
+                            required></textarea>
+
+                        <div class="chat-actions">
+                            <button class="btn btn-secondary" type="button" id="clearBtn">Effacer</button>
+                            <button class="btn btn-primary" type="submit" id="sendBtn">Envoyer</button>
+                        </div>
+
+                        <div class="status" id="status" aria-live="polite"></div>
+                    </form>
+                </div>
+
+                <footer class="site-footer" aria-label="Informations">
+                    <div class="footer-grid">
+                        <div class="footer-block">
+                            <div class="footer-title">Sources & références</div>
+                            <ul class="footer-list">
+                                <li><a href="https://arxiv.org" target="_blank" rel="noreferrer">arXiv (open access)</a>
+                                </li>
+                                <li><a href="https://www.semanticscholar.org/product/api" target="_blank"
+                                        rel="noreferrer">Semantic Scholar API</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="footer-block">
+                            <div class="footer-title">Bonnes pratiques</div>
+                            <p class="footer-text">
+                                Vérifiez toujours les citations et la pertinence des papiers avant usage académique.
+                                DIXIT fournit une aide à la synthèse, pas une validation scientifique.
+                            </p>
+                        </div>
+
+                        <div class="footer-block">
+                            <div class="footer-title">Confidentialité</div>
+                            <p class="footer-text">
+                                Sans compte. L’historique peut être partagé manuellement via email.
+                                Évitez d’y inclure des données sensibles.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="footer-bottom">
+                        <span>© <span id="year"></span> DIXIT BOT</span>
+                        <span class="footer-sep">
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js" defer></script>
+</body>
+
+</html>
