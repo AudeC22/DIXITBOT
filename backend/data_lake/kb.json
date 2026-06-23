@@ -1,0 +1,13 @@
+[
+  {
+    "title": "TF-IDF",
+    "content": "TF-IDF transforme du texte en vecteurs et permet de calculer une similarité via cosine.",
+    "tags": ["nlp", "search"]
+  },
+  {
+    "library": "pytorch",
+    "name": "torch.nn.Linear",
+    "signature": "torch.nn.Linear(in_features, out_features, bias=True)",
+    "description": "Couche linéaire (affine) : y = xA^T + b."
+  }
+]
