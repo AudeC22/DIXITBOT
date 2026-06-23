@@ -24,7 +24,7 @@ Il repose sur une architecture moderne :
 
 - **Frontend** : Application web en HTML/CSS/JavaScript avec Vite
 - **Backend** : API REST en Python avec FastAPI
-- **IA locale** : Ollama avec modèle de langage open-source (par défaut llama3)
+- **IA locale** : Ollama avec modèle de langage open-source (par défaut qwen3:1.7b)
 - **Intégrations** : Scraping automatique d'articles scientifiques (ArXiv, Semantic Scholar)
 - **Base de données** : Stockage local des connaissances extraites
 
@@ -174,7 +174,7 @@ DIXITBOT/
 ## Technologies utilisées
 
 - FastAPI
-- Ollama (avec modèle llama3)
+- Ollama (avec modèle qwen3:1.7b)
 - MailHog (pour les emails)
 - HTML/CSS/JS (frontend)
 - MCP-like tools (scraping)
@@ -272,10 +272,10 @@ Après installation, vérifier :
 ollama --version
 ```
 
-Puis télécharger le modèle par défaut (llama3) :
+Puis télécharger le modèle par défaut (qwen3:1.7b) :
 
 ```bash
-ollama pull llama3
+ollama pull qwen3:1.7b
 ```
 
 ### 3️⃣ Installer les dépendances Python
@@ -405,7 +405,7 @@ L'interface web sera accessible sur http://localhost:5173 (ou le port indiqué p
 
 ## 🔧 Configuration
 
-- Modèle Ollama : Configurable via variable d'environnement `OLLAMA_MODEL` (défaut: llama3)
+- Modèle Ollama : Configurable via variable d'environnement `OLLAMA_MODEL` (défaut: qwen3:1.7b)
 - Port Ollama : `OLLAMA_BASE_URL` (défaut: http://127.0.0.1:11434)
 - Timeout et rate limiting : Ajustables dans `ollama_client.py`
 

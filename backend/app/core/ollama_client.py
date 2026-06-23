@@ -18,7 +18,7 @@ class OllamaClient:
         min_interval_s: float = 1.0,  # rate limit: 1 req/s
     ) -> None:
         self.base_url = (base_url or os.getenv("OLLAMA_BASE_URL") or "http://127.0.0.1:11434").rstrip("/")
-        self.model = model or os.getenv("OLLAMA_MODEL") or "llama3"
+        self.model = model or os.getenv("OLLAMA_MODEL") or "qwen3:1.7b"
         self.timeout_s = float(timeout_s)
         self.min_interval_s = float(min_interval_s)
 
