@@ -18,14 +18,14 @@ Création en 7 jours par une équipe de 5 personnes d'un chatbot IA (DIXITBOT) d
 
 # 🤖 DIXITBOT — Agent conversationnel intelligent pour revue de littérature scientifique
 
-Ce projet est un **agent conversationnel intelligent** spécialisé dans la revue de littérature scientifique en informatique. Il permet de poser des questions sur des sujets scientifiques et utilise une base de connaissances (KB) enrichie par scraping automatique depuis ArXiv et Semantic Scholar.
+Ce projet est un **agent conversationnel intelligent** spécialisé dans la revue de littérature scientifique en informatique. Il permet de poser des questions sur des sujets scientifiques et utilise une base de connaissances (KB) enrichie par scraping automatique depuis ArXiv.
 
 Il repose sur une architecture moderne :
 
 - **Frontend** : Application web en HTML/CSS/JavaScript avec Vite
 - **Backend** : API REST en Python avec FastAPI
 - **IA locale** : Ollama avec modèle de langage open-source (par défaut qwen3:1.7b)
-- **Intégrations** : Scraping automatique d'articles scientifiques (ArXiv, Semantic Scholar)
+- **Intégrations** : Scraping automatique d'articles scientifiques (ArXiv)
 - **Base de données** : Stockage local des connaissances extraites
 
 ---
@@ -35,7 +35,7 @@ Il repose sur une architecture moderne :
 - **Frontend** : Interface utilisateur web simple et responsive
 - **Backend** : Python + FastAPI pour les API REST
 - **IA locale** : Ollama pour exécution de modèles LLM en local
-- **Scraping** : Intégrations pour récupérer des données depuis ArXiv et Semantic Scholar
+- **Scraping** : Intégrations pour récupérer des données depuis ArXiv
 - **Mémoire/KB** : Stockage et gestion d'une base de connaissances locale
 
 ## Flux de fonctionnement
@@ -155,7 +155,7 @@ DIXITBOT/
 │       │   ├── prompts.py        # Prompts système et utilisateur
 │       │   └── memory.py         # Gestion de la mémoire/KB
 │       ├── integrations/     # Intégrations externes
-│       │   └── MCP_scraping/ # Scraping ArXiv et Semantic Scholar
+│       │   └── MCP_scraping/ # Scraping ArXiv
 │       └── services/         # Services métier
 ├── data_lake/               # Stockage des données
 │   ├── kb.json              # Base de connaissances JSON
