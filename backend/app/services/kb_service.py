@@ -5,7 +5,7 @@ from pathlib import Path
 def _kb_path() -> Path:
     return Path(__file__).resolve().parents[2] / "data_lake" / "kb.json"
 
-def search_kb(query: str, top_k: int = 5, min_score: float = 0.1, source: str = "kb.json") -> Dict[str, Any]:
+def search_kb(query: str, top_k: int = 5, min_score: float = 0.1) -> Dict[str, Any]:
     """
     Simule une recherche dans kb.json.
     En vrai, utilise un embedding ou un index (ex: FAISS, ChromaDB).
@@ -21,10 +21,17 @@ def search_kb(query: str, top_k: int = 5, min_score: float = 0.1, source: str = 
     except Exception as e:
         return {"ok": False, "errors": [f"KB_LOAD_ERROR: {str(e)}"], "results": []}
 
+    if isinstance(data, dict):
+        items = data.get("items", [])
+    elif isinstance(data, list):
+        items = data
+    else:
+        items = []
+
     # Simule une recherche : filtre par query dans title ou abstract
     results = []
     query_lower = query.lower()
-    for item in data.get("items", []):
+    for item in items:
         title = (item.get("title") or "").lower()
         abstract = (item.get("abstract") or "").lower()
         if query_lower in title or query_lower in abstract:
