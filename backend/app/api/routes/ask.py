@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 from app.services.kb_service import search_kb  # Remplacez par import absolu si nécessaire
 from app.services.scrape_service import scrape_arxiv
 from app.services.prompt_service import build_kb_context, build_arxiv_context, build_strict_prompt
-from app.services.llm_service import ollama_generate
 
 router = APIRouter()
 
