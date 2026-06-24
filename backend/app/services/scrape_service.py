@@ -96,10 +96,17 @@ def scrape_arxiv(
             if typ == "application/pdf" and href:
                 pdf_url = href
 
+        authors = [
+            _clean(name_el.text)
+            for name_el in entry.findall("atom:author/atom:name", ns)
+            if _clean(name_el.text)
+        ]
+
         items.append(
             {
                 "arxiv_id": arxiv_id,
                 "title": title,
+                "authors": authors,
                 "submitted_date": published,
                 "abs_url": abs_url,
                 "pdf_url": pdf_url,
