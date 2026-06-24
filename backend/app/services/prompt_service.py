@@ -53,3 +53,21 @@ def build_strict_prompt(question: str, context: str) -> str:
         f"QUESTION:\n{question}\n\n"
         f"CONTEXTE:\n{context}\n"
     )
+
+
+def normalize_sources(kb_results: List[Dict[str, Any]], arxiv_items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    sources: List[Dict[str, Any]] = []
+
+    for item in kb_results:
+        sources.append({
+            "title": item.get("title") or item.get("id"),
+            "url": item.get("url") or "",
+        })
+
+    for item in arxiv_items:
+        sources.append({
+            "title": item["title"],
+            "url": item["abs_url"],
+        })
+
+    return sources[:10]
