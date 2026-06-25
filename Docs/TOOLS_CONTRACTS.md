@@ -74,6 +74,40 @@ réellement disponibles. Roadmap V2 si un besoin réel d'afficher/filtrer par
 catégorie est identifié (ajout de l'extraction `<category term="..."/>` dans
 `scrape_service.py`).
 
+## Tool implémenté : `send_email` (slide 10)
+
+Wrappe `backend/app/services/email_service.send_email_smtp()`. Envoie
+l'historique de conversation par email, via le serveur SMTP local MailHog
+(`SMTP_HOST`/`SMTP_PORT`, défaut `127.0.0.1:1025`).
+
+**Params (`SendEmailParams`)** :
+```
+recipient_email: str
+subject: str
+conversation_history: List[Dict[str, str]]
+# chaque élément attendu : {"role": ..., "content": ..., "timestamp": ...}
+```
+
+**Items** : ce tool ne retourne aucun item structuré (`items` reste toujours
+`[]`, qu'il y ait succès ou échec). Il réutilise le même `ToolResponse` que
+`arxiv_metadata` — seuls `ok`, `scraped_at` et `errors` sont pertinents ici.
+
+**Comportement** :
+- Construit un corps HTML simple (une ligne par message, pas de template
+  engine).
+- Sauvegarde une copie JSON de `conversation_history` dans
+  `backend/data_lake/raw/conversation_history/` avant l'envoi.
+- Envoie l'email via `smtplib` (stdlib), sans dépendance externe.
+
+### Limitations connues
+
+- Pas de pièce jointe : seulement du texte brut + HTML simple.
+- Pas de vérification du format de l'adresse email côté backend (au-delà
+  de la validation `str` de Pydantic) — une adresse mal formée échouera
+  probablement côté serveur SMTP, pas avant.
+- Conçu pour MailHog en local ; aucune configuration TLS/authentification
+  SMTP (non nécessaire pour un serveur de test local).
+
 ## Roadmap — non implémenté dans cette version
 
 **Niveau 2 (contexte)** : `get_context(params: {"arxiv_id": str}) -> ToolResponse`
