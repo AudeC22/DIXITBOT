@@ -7,3 +7,4 @@ node_modules/
 *.egg-info/
 .DS_Store
 backend/data_lake/raw/cache/
+backend/data_lake/raw/conversation_history/
