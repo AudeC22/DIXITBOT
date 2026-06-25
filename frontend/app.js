@@ -164,34 +164,3 @@ input.addEventListener("keydown", (e) => {
 });
 
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-const healthBtn = document.getElementById('health-btn');
-const askBtn = document.getElementById('ask-btn');
-const queryInput = document.getElementById('query-input');
-const resultDiv = document.getElementById('result');
-
-healthBtn.addEventListener('click', async () => {
-  try {
-    const response = await fetch('/api/health');
-    const data = await response.json();
-    resultDiv.textContent = JSON.stringify(data, null, 2);
-  } catch (error) {
-    resultDiv.textContent = 'Erreur: ' + error.message;
-  }
-});
-
-askBtn.addEventListener('click', async () => {
-  const query = queryInput.value;
-  if (!query) return;
-  try {
-    const response = await fetch('/api/ask', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query }),
-    });
-    const data = await response.json();
-    resultDiv.textContent = JSON.stringify(data, null, 2);
-  } catch (error) {
-    resultDiv.textContent = 'Erreur: ' + error.message;
-  }
-});
