@@ -1,6 +1,13 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel
+
+
+class SendEmailParams(BaseModel):
+    recipient_email: str
+    subject: str
+    conversation_history: List[Dict[str, str]]
+    # chaque élément attendu : {"role": ..., "content": ..., "timestamp": ...}
 
 
 class ArxivMetadataParams(BaseModel):
