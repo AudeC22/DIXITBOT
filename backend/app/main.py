@@ -42,6 +42,12 @@ def create_app() -> FastAPI:
     except ImportError:
         pass
 
+    try:
+        from app.api.routes.email import router as email_router
+        app.include_router(email_router, prefix="/api", tags=["email"])
+    except ImportError:
+        pass
+
     # plus tard si tu ajoutes :
     # from app.api.routes.mcp import router as mcp_router
     # from app.api.routes.analytics import router as analytics_router
