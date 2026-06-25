@@ -1,15 +1,17 @@
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-from app.integrations.mcp.schemas import ArxivMetadataParams, ToolResponse
-from app.integrations.mcp.tools import get_arxiv_metadata
+from app.integrations.mcp.schemas import ArxivMetadataParams, SendEmailParams, ToolResponse
+from app.integrations.mcp.tools import get_arxiv_metadata, send_email
 
 AVAILABLE_TOOLS = {
     "arxiv_metadata": get_arxiv_metadata,
+    "send_email": send_email,
 }
 
 _PARAM_SCHEMAS = {
     "arxiv_metadata": ArxivMetadataParams,
+    "send_email": SendEmailParams,
 }
 
 
