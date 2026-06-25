@@ -7,6 +7,7 @@ const statusEl = document.getElementById("status");
 const sendBtn = document.getElementById("sendBtn");
 const clearBtn = document.getElementById("clearBtn");
 const shareBtn = document.getElementById("shareBtn");
+const sendEmailBtn = document.getElementById("sendEmailBtn");
 const yearEl = document.getElementById("year");
 
 const chipButtons = document.querySelectorAll(".chip");
@@ -127,6 +128,56 @@ function openEmailClient() {
   window.location.href = mailto;
 }
 
+function buildConversationHistory() {
+  // Reprend la structure déjà utilisée pour chatHistory (role + text),
+  // et l'adapte au format attendu par le backend (role + content + timestamp).
+  const history = [];
+  for (const message of chatHistory) {
+    history.push({
+      role: message.role,
+      content: message.text,
+      timestamp: new Date().toISOString(),
+    });
+  }
+  return history;
+}
+
+async function sendEmailToBackend(payload) {
+  const res = await fetch("/api/send-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const raw = await res.text().catch(() => "");
+    throw new Error(`Erreur API (${res.status}) ${raw ? `— ${raw}` : ""}`);
+  }
+
+  return res.json();
+}
+
+async function handleSendHistoryByEmail() {
+  const recipientEmail = window.prompt("Adresse email du destinataire :");
+  if (!recipientEmail) return;
+
+  const payload = {
+    recipient_email: recipientEmail,
+    subject: "Historique de recherche — DIXIT BOT",
+    conversation_history: buildConversationHistory(),
+  };
+
+  try {
+    await sendEmailToBackend(payload);
+    addMessage({ role: "bot", text: "Email envoyé avec succès." });
+  } catch (err) {
+    addMessage({
+      role: "bot",
+      text: "Je n’ai pas pu envoyer l’email.\n\n" + `Détail : ${err.message}`,
+    });
+  }
+}
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   handleSend(input.value);
@@ -143,6 +194,10 @@ clearBtn.addEventListener("click", () => {
 
 shareBtn.addEventListener("click", () => {
   openEmailClient();
+});
+
+sendEmailBtn.addEventListener("click", () => {
+  handleSendHistoryByEmail();
 });
 
 chipButtons.forEach((btn) => {
