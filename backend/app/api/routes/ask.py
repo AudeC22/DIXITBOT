@@ -5,8 +5,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 from app.core.ollama_client import OllamaClient
+from app.integrations import mcp
 from app.services.kb_service import search_kb
-from app.services.scrape_service import scrape_arxiv
 from app.services.decision_service import should_scrape_arxiv
 from app.services.prompt_service import (
     build_kb_context,
@@ -49,17 +49,16 @@ def ask(req: AskRequest) -> Dict[str, Any]:
 
     arxiv_items: List[Dict[str, Any]] = []
     if used_arxiv:
-        try:
-            arxiv_data = scrape_arxiv(req.question, req.theme, req.scrape_max_results, req.scrape_sort)
-        except Exception as e:
-            logger.error(f"arXiv scrape failed: {e}")
-            raise HTTPException(503, f"Service arXiv indisponible: {e}")
-
-        if not arxiv_data.get("ok", False):
-            logger.error(f"arXiv scrape returned an error: {arxiv_data.get('errors')}")
-            raise HTTPException(503, f"Service arXiv indisponible: {arxiv_data.get('errors')}")
-
-        arxiv_items = arxiv_data.get("items", [])
+        tool_response = mcp.run_tool("arxiv_metadata", {
+            "query": req.question,
+            "theme": req.theme,
+            "max_results": req.scrape_max_results,
+            "sort": req.scrape_sort
+        })
+        if not tool_response.ok:
+            logger.error(f"arXiv tool returned an error: {tool_response.errors}")
+            raise HTTPException(503, f"Service arXiv indisponible: {tool_response.errors}")
+        arxiv_items = [item.dict() for item in tool_response.items]
 
     context = build_kb_context(kb_results)
     if arxiv_items:
