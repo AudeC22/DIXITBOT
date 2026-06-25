@@ -39,7 +39,6 @@ L’agent raisonne avant d’agir, consulte sa base de connaissances, et utilise
 ## Sources autorisées (publiques)
 
 - arXiv (prépublications)
-- Semantic Scholar (index académique)
 - PubMed (biomédical)
 - OpenAlex (métadonnées scientifiques)
 - DOAJ (revues open access)
