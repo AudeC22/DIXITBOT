@@ -146,11 +146,13 @@ backend/
 - main.py : point d’entrée API
 - core/ : logique agentique et décisionnelle
 
-mcp/
+backend/app/integrations/mcp/
 
-- server.py : serveur MCP
-- tools.py : déclaration des outils
-- schemas.py : formats d’échange
+- __init__.py
+- registry.py    (run_tool, AVAILABLE_TOOLS)
+- schemas.py
+- tools.py
+- _validate.py   (script de validation manuelle, committé volontairement)
 
 scraping/
 
