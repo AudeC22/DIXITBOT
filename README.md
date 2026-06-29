@@ -145,30 +145,32 @@ DIXITBOT/
 ├── README.md                 # Ce fichier
 ├── requirements.txt          # Dépendances Python
 ├── backend/                  # Code backend Python
-│   └── app/
-│       ├── __init__.py
-│       ├── main.py           # Point d'entrée FastAPI
-│       ├── api/
-│       │   └── routes/       # Routes API (ask, health, kb, scrape)
-│       ├── core/             # Noyau IA
-│       │   ├── ollama_client.py  # Client HTTP pour Ollama
-│       │   ├── prompts.py        # Prompts système et utilisateur
-│       │   └── memory.py         # Gestion de la mémoire/KB
-│       ├── integrations/     # Intégrations externes
-│       │   └── MCP_scraping/ # Scraping ArXiv
-│       └── services/         # Services métier
-├── data_lake/               # Stockage des données
-│   ├── kb.json              # Base de connaissances JSON
-│   ├── KB/                  # Dossier connaissances
-│   ├── processed/           # Données traitées
-│   └── raw/                 # Données brutes scrapées
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py           # Point d'entrée FastAPI
+│   │   ├── api/
+│   │   │   └── routes/       # Routes API (ask, health, scrape, email)
+│   │   ├── core/             # Noyau IA
+│   │   │   └── ollama_client.py  # Client HTTP pour Ollama
+│   │   ├── integrations/     # Intégrations externes
+│   │   │   └── mcp/          # Module d'outils MCP
+│   │   │       ├── __init__.py
+│   │   │       ├── registry.py    # run_tool, AVAILABLE_TOOLS
+│   │   │       ├── schemas.py
+│   │   │       ├── tools.py
+│   │   │       └── _validate.py   # Script de validation manuelle
+│   │   └── services/         # Services métier
+│   └── data_lake/            # Stockage des données
+│       ├── kb.json           # Base de connaissances JSON
+│       ├── KB/               # Dossier connaissances
+│       ├── processed/        # Données traitées
+│       └── raw/              # Données brutes scrapées
 ├── frontend/                # Interface web
 │   ├── index.html
 │   ├── app.js
 │   ├── style.css
 │   └── package.json
-├── processing/              # Scripts de traitement
-└── DOC/                     # Documentation
+└── Docs/                    # Documentation
 ```
 
 ## Technologies utilisées
