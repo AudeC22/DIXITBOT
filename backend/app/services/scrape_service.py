@@ -34,6 +34,21 @@ def _clean(s: Optional[str]) -> str:
     return " ".join((s or "").strip().split())
 
 
+def _build_arxiv_query_url(query: str, theme: Optional[str], max_results: int, sort: str) -> str:
+    cat = _THEME_TO_ARXIV_CAT.get(theme or "", None)
+    parts = [f'all:{urllib.parse.quote(query)}']
+    if cat:
+        parts.append(f"cat:{cat}")
+    search_query = "+AND+".join(parts)
+    order_by = "relevance" if sort == "relevance" else "submittedDate"
+    return (
+        "http://export.arxiv.org/api/query"
+        f"?search_query={search_query}"
+        f"&start=0&max_results={max_results}"
+        f"&sortBy={order_by}&sortOrder=descending"
+    )
+
+
 def scrape_arxiv(
     query: str,
     theme: Optional[str] = None,
@@ -47,22 +62,7 @@ def scrape_arxiv(
     if not q:
         return {"ok": False, "errors": ["EMPTY_QUERY"], "items": []}
 
-    cat = _THEME_TO_ARXIV_CAT.get(theme or "", None)
-
-    # arXiv API query format:
-    # search_query=all:<terms> AND cat:cs.AI
-    parts = [f'all:{urllib.parse.quote(q)}']
-    if cat:
-        parts.append(f"cat:{cat}")
-    search_query = "+AND+".join(parts)
-
-    order_by = "relevance" if sort == "relevance" else "submittedDate"
-    url = (
-        "http://export.arxiv.org/api/query"
-        f"?search_query={search_query}"
-        f"&start=0&max_results={max_results}"
-        f"&sortBy={order_by}&sortOrder=descending"
-    )
+    url = _build_arxiv_query_url(q, theme, max_results, sort)
 
     try:
         r = requests.get(url, timeout=30)
