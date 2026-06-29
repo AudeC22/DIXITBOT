@@ -83,7 +83,7 @@ Exemples de contenu :
 - Règles tool / no-tool
 - Formats de réponse
 
-### MCP Server (Model Context Protocol)
+### MCP Server (module d'outils interne — pas le Model Context Protocol d'Anthropic)
 
 Rôle :
 
