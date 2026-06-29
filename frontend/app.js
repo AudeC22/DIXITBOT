@@ -55,30 +55,6 @@ function safeTrim(value) {
   return (value || "").replace(/\s+/g, " ").trim();
 }
 
-async function sendToBackend(userText) {
-  const payload = { question: userText };
-
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) {
-    const raw = await res.text().catch(() => "");
-    throw new Error(`Erreur API (${res.status}) ${raw ? `— ${raw}` : ""}`);
-  }
-
-  const data = await res.json();
-  const reply = data.answer || data.reply || data.message || data.output;
-
-  if (!reply || typeof reply !== "string") {
-    throw new Error("Réponse backend invalide (champ answer/reply/message/output manquant).");
-  }
-
-  return reply;
-}
-
 async function handleSend(text) {
   const userText = safeTrim(text);
   if (!userText) return;
@@ -87,18 +63,47 @@ async function handleSend(text) {
   input.value = "";
 
   setLoading(true, "Analyse en cours…");
+
+  // Étape 1 : appel réseau — si fetch échoue, c’est une vraie erreur de connexion
+  let res;
   try {
-    const reply = await sendToBackend(userText);
-    addMessage({ role: "bot", text: reply });
-    setLoading(false, "");
-  } catch (err) {
+    res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: userText }),
+    });
+  } catch (networkErr) {
     addMessage({
       role: "bot",
       text:
         "Je n’arrive pas à joindre le backend. Vérifie l’URL API dans app.js et que le serveur est démarré.\n\n" +
-        `Détail : ${err.message}`,
+        `Détail : ${networkErr.message}`,
     });
     setLoading(false, "Erreur — backend indisponible ou réponse invalide.");
+    return;
+  }
+
+  // Étape 2 : le backend a répondu, mais avec un code d’erreur (ex: 503)
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    const detail = data.detail || `Code HTTP ${res.status}`;
+    addMessage({ role: "bot", text: `Le backend a renvoyé une erreur.\n\nDétail : ${detail}` });
+    setLoading(false, "Erreur — le backend a renvoyé une erreur.");
+    return;
+  }
+
+  // Étape 3 : lecture et affichage de la réponse
+  try {
+    const data = await res.json();
+    const reply = data.answer || data.reply || data.message || data.output;
+    if (!reply || typeof reply !== "string") {
+      throw new Error("Réponse backend invalide (champ answer/reply/message/output manquant).");
+    }
+    addMessage({ role: "bot", text: reply });
+    setLoading(false, "");
+  } catch (parseErr) {
+    addMessage({ role: "bot", text: "Réponse backend invalide.\n\nDétail : " + parseErr.message });
+    setLoading(false, "Erreur — réponse invalide.");
   }
 }
 
