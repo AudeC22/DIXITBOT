@@ -31,13 +31,6 @@ class OllamaClient:
             time.sleep(self.min_interval_s - elapsed)
         self._last_call_ts = time.time()
 
-    def tags(self) -> Dict[str, Any]:
-        """List locally available models."""
-        url = f"{self.base_url}/api/tags"
-        r = requests.get(url, timeout=self.timeout_s)
-        r.raise_for_status()
-        return r.json()
-
     def generate(
         self,
         prompt: str,

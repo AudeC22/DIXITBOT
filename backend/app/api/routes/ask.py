@@ -29,7 +29,6 @@ class AskRequest(BaseModel):
     scrape_sort: str = Field(default="relevance", description="relevance|submitted_date")
 
     model: str = Field(default="qwen3:1.7b", description="Modèle Ollama")
-    debug: bool = Field(default=False, description="Retourne infos debug")
 
 
 @router.post("/ask")
