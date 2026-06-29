@@ -341,7 +341,7 @@ cd backend
 python -m app.main
 ```
 
-L'API FastAPI sera disponible sur http://127.0.0.1:8000
+L'API FastAPI sera disponible sur http://127.0.0.1:51234
 
 ### 4️⃣ Lancer le frontend
 
@@ -358,8 +358,8 @@ L'interface web sera accessible sur http://localhost:5173 (ou le port indiqué p
 
 | Service         | URL/Port                   |
 | --------------- | -------------------------- |
-| Backend FastAPI | http://127.0.0.1:8000      |
-| Swagger UI      | http://127.0.0.1:8000/docs |
+| Backend FastAPI | http://127.0.0.1:51234      |
+| Swagger UI      | http://127.0.0.1:51234/docs |
 | Frontend        | http://localhost:5173      |
 | MailHog SMTP    | 127.0.0.1:1025             |
 | MailHog UI      | http://127.0.0.1:8025      |
@@ -369,7 +369,7 @@ L'interface web sera accessible sur http://localhost:5173 (ou le port indiqué p
 
 ### Test de l'envoi d'email via Swagger
 
-1. Ouvrir : http://127.0.0.1:8000/docs
+1. Ouvrir : http://127.0.0.1:51234/docs
 2. Localiser l'endpoint : `POST /send-email`
 3. Cliquer sur "Try it out"
 4. Remplir le corps JSON :
