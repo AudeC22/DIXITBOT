@@ -8,11 +8,10 @@ def create_app() -> FastAPI:
         description="Backend for DIXITBOT (scraping, KB, MCP, QA via Ollama).",
     )
 
-    # CORS (DEV) — en prod, remplace "*" par ton domaine front
+    # CORS (DEV) — en prod, remplace par le domaine front réel
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
+        allow_origins=["http://localhost:5173"],
         allow_methods=["*"],
         allow_headers=["*"],
     )
