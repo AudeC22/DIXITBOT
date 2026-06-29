@@ -97,7 +97,7 @@ _Depuis la page /html_ :
 
 ---
 
-### 2) Module Email (MailHog)
+### 2) Module Email (Mailpit, remplaçant local de MailHog, abandonné depuis 2020)
 
 **Objectif** : Envoyer l'historique des conversations par email (démo, test, archivage).
 
@@ -105,7 +105,7 @@ _Depuis la page /html_ :
 
 **Fonctionnalités** :
 
-- Envoi d'emails SMTP via MailHog (serveur local)
+- Envoi d'emails SMTP via Mailpit (remplaçant local de MailHog, abandonné depuis 2020)
 - Formatage HTML + texte brut de l'historique de conversation
 - Configuration SMTP centralisée
 - Intégration API FastAPI
@@ -113,7 +113,7 @@ _Depuis la page /html_ :
 **Configuration** :
 
 - **SMTP local** : `127.0.0.1:1025`
-- **UI MailHog** : `http://127.0.0.1:8025`
+- **UI Mailpit** : `http://127.0.0.1:8025`
 
 **Format de la requête** :
 
@@ -177,7 +177,7 @@ DIXITBOT/
 
 - FastAPI
 - Ollama (avec modèle qwen3:1.7b)
-- MailHog (pour les emails)
+- Mailpit (remplaçant local de MailHog, abandonné depuis 2020) (pour les emails)
 - HTML/CSS/JS (frontend)
 - MCP-like tools (scraping)
 - Python 3.10+
@@ -212,7 +212,7 @@ DIXITBOT/
 
 | Module        | Version    | Utilité                        |
 | ------------- | ---------- | ------------------------------ |
-| `smtplib`     | ✅ builtin | Envoi SMTP (emails MailHog)    |
+| `smtplib`     | ✅ builtin | Envoi SMTP (emails via Mailpit) |
 | `email.mime`  | ✅ builtin | Construction emails HTML/texte |
 | `email.utils` | ✅ builtin | Formatage headers SMTP         |
 
@@ -274,9 +274,9 @@ cd frontend
 npm install
 ```
 
-### 5️⃣ Installer MailHog (module Email)
+### 5️⃣ Installer Mailpit (remplaçant local de MailHog, abandonné depuis 2020)
 
-MailHog sert de boîte mail locale pour tester l'envoi d'emails.
+Mailpit (remplaçant local de MailHog, abandonné depuis 2020) sert de boîte mail locale pour tester l'envoi d'emails.
 
 **Téléchargement** : https://github.com/mailhog/MailHog/releases
 (Fichier recommandé : `MailHog_windows_amd64.exe`)
@@ -288,7 +288,7 @@ MailHog sert de boîte mail locale pour tester l'envoi d'emails.
 C:\MailHog\MailHog_windows_amd64.exe
 ```
 
-**Interface web MailHog** : http://127.0.0.1:8025
+**Interface web Mailpit** : http://127.0.0.1:8025
 
 **Ports utilisés** :
 
@@ -297,7 +297,7 @@ C:\MailHog\MailHog_windows_amd64.exe
 
 ## 🚀 Lancement
 
-### 1️⃣ Lancer MailHog
+### 1️⃣ Lancer Mailpit
 
 Dans un terminal :
 
@@ -344,8 +344,8 @@ L'interface web sera accessible sur http://localhost:5173 (ou le port indiqué p
 | Backend FastAPI | http://127.0.0.1:51234      |
 | Swagger UI      | http://127.0.0.1:51234/docs |
 | Frontend        | http://localhost:5173      |
-| MailHog SMTP    | 127.0.0.1:1025             |
-| MailHog UI      | http://127.0.0.1:8025      |
+| Mailpit SMTP    | 127.0.0.1:1025             |
+| Mailpit UI      | http://127.0.0.1:8025      |
 | Ollama API      | http://127.0.0.1:11434     |
 
 ## ✅ Tests rapides
@@ -376,7 +376,7 @@ L'interface web sera accessible sur http://localhost:5173 (ou le port indiqué p
 }
 ```
 
-5. Vérifier l'email dans MailHog : http://127.0.0.1:8025
+5. Vérifier l'email dans Mailpit : http://127.0.0.1:8025
 
 ---
 
