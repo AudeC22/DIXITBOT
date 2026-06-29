@@ -278,14 +278,12 @@ npm install
 
 Mailpit (remplaçant local de MailHog, abandonné depuis 2020) sert de boîte mail locale pour tester l'envoi d'emails.
 
-**Téléchargement** : https://github.com/mailhog/MailHog/releases
-(Fichier recommandé : `MailHog_windows_amd64.exe`)
+**Installation** : `brew install mailpit`
 
 **Lancement** :
 
 ```bash
-# Exemple si MailHog est dans C:\MailHog\
-C:\MailHog\MailHog_windows_amd64.exe
+mailpit
 ```
 
 **Interface web Mailpit** : http://127.0.0.1:8025
@@ -302,7 +300,7 @@ C:\MailHog\MailHog_windows_amd64.exe
 Dans un terminal :
 
 ```bash
-C:\MailHog\MailHog_windows_amd64.exe
+mailpit
 ```
 
 ### 2️⃣ Lancer Ollama
