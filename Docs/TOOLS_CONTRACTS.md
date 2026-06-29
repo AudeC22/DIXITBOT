@@ -77,7 +77,7 @@ catégorie est identifié (ajout de l'extraction `<category term="..."/>` dans
 ## Tool implémenté : `send_email` (slide 10)
 
 Wrappe `backend/app/services/email_service.send_email_smtp()`. Envoie
-l'historique de conversation par email, via le serveur SMTP local MailHog
+l'historique de conversation par email, via le serveur SMTP local Mailpit (remplaçant local de MailHog, abandonné depuis 2020)
 (`SMTP_HOST`/`SMTP_PORT`, défaut `127.0.0.1:1025`).
 
 **Params (`SendEmailParams`)** :
@@ -105,7 +105,7 @@ conversation_history: List[Dict[str, str]]
 - Pas de vérification du format de l'adresse email côté backend (au-delà
   de la validation `str` de Pydantic) — une adresse mal formée échouera
   probablement côté serveur SMTP, pas avant.
-- Conçu pour MailHog en local ; aucune configuration TLS/authentification
+- Conçu pour Mailpit (remplaçant local de MailHog, abandonné depuis 2020) en local ; aucune configuration TLS/authentification
   SMTP (non nécessaire pour un serveur de test local).
 
 ## Roadmap — non implémenté dans cette version
