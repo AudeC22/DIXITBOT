@@ -52,7 +52,7 @@ Il repose sur une architecture moderne :
 
 **Objectif** : Scraper des publications scientifiques depuis arXiv pour alimenter l'agent IA en données récentes et fiables.
 
-**Localisation** : `backend/app/integrations/MCP_scraping/`
+**Localisation** : `backend/app/integrations/mcp/`
 
 **Fonctionnalités** :
 
@@ -87,7 +87,7 @@ _Depuis la page /html_ :
 - `method` : section Méthodologie/Approche
 - `references` : bibliographie complète
 
-**Fichier principal** : `backend/app/integrations/MCP_scraping/scrapping.py`
+**Fichier principal** : `backend/app/integrations/mcp/tools.py`
 
 **Utilisation** :
 
