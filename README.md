@@ -188,25 +188,17 @@ DIXITBOT/
 
 | Module     | Version | Utilité                            |
 | ---------- | ------- | ---------------------------------- |
-| `fastapi`  | ≥0.100  | Framework API REST pour le backend |
-| `uvicorn`  | ≥0.23   | Serveur ASGI pour FastAPI          |
-| `pydantic` | ≥2.0    | Validation schémas + types stricts |
+| `fastapi`           | ≥0.100  | Framework API REST pour le backend        |
+| `uvicorn`           | ≥0.23   | Serveur ASGI pour FastAPI                 |
+| `pydantic`          | ≥2.0    | Validation schémas + types stricts        |
+| `python-multipart`  | ≥0.0.6  | Parsing des formulaires multipart         |
 
 ### 🔗 Requêtes HTTP & Communication
 
-| Module     | Version | Utilité                               |
-| ---------- | ------- | ------------------------------------- |
-| `requests` | ≥2.31   | Requêtes HTTP (scraping arXiv)        |
-| `aiohttp`  | ≥3.9    | Requêtes HTTP asynchrones (optionnel) |
-| `httpx`    | ≥0.24   | Client HTTP moderne (optionnel)       |
+| Module     | Version | Utilité                        |
+| ---------- | ------- | ------------------------------ |
+| `requests` | ≥2.31   | Requêtes HTTP (scraping arXiv) |
 
-### 🏗️ Parsing HTML & Web Scraping
-
-| Module           | Version | Utilité                                 |
-| ---------------- | ------- | --------------------------------------- |
-| `beautifulsoup4` | ≥4.12   | Parsing HTML (extraction données arXiv) |
-| `lxml`           | ≥4.9    | Parser HTML performant (backend BS4)    |
-| `html5lib`       | ≥1.1    | Parser HTML robuste (fallback)          |
 
 ### 💾 Stockage & Sérialisation
 
@@ -224,11 +216,6 @@ DIXITBOT/
 | `email.mime`  | ✅ builtin | Construction emails HTML/texte |
 | `email.utils` | ✅ builtin | Formatage headers SMTP         |
 
-### 🤖 IA & Ollama
-
-| Module   | Version | Utilité                             |
-| -------- | ------- | ----------------------------------- |
-| `ollama` | ≥0.1    | Client Python Ollama (requêtes LLM) |
 
 ### 📊 Utilitaires & Outils
 
@@ -244,12 +231,6 @@ DIXITBOT/
 | `typing`   | ✅ builtin | Type hints (Dict, List, Optional, etc.) |
 | `logging`  | ✅ builtin | Logs debug / erreurs                    |
 
-### 🧪 Tests & Qualité (optionnel)
-
-| Module           | Version | Utilité                   |
-| ---------------- | ------- | ------------------------- |
-| `pytest`         | ≥7.4    | Framework tests unitaires |
-| `pytest-asyncio` | ≥0.21   | Tests async/await         |
 
 ---
 
