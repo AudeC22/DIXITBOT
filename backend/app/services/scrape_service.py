@@ -61,6 +61,41 @@ def _fetch_arxiv_feed(url: str) -> ET.Element:
         raise RuntimeError(f"ARXIV_XML_PARSE_ERROR: {e}") from e
 
 
+def _parse_arxiv_entry(entry: ET.Element, ns: dict, theme: Optional[str]) -> Dict[str, Any]:
+    arxiv_id = _clean(entry.findtext("atom:id", default="", namespaces=ns)).split("/")[-1]
+    title = _clean(entry.findtext("atom:title", default="", namespaces=ns))
+    abstract = _clean(entry.findtext("atom:summary", default="", namespaces=ns))
+    published = _clean(entry.findtext("atom:published", default="", namespaces=ns))
+
+    abs_url = ""
+    pdf_url = ""
+    for link in entry.findall("atom:link", ns):
+        rel = link.attrib.get("rel", "")
+        href = link.attrib.get("href", "")
+        typ = link.attrib.get("type", "")
+        if rel == "alternate" and href:
+            abs_url = href
+        if typ == "application/pdf" and href:
+            pdf_url = href
+
+    authors = [
+        _clean(name_el.text)
+        for name_el in entry.findall("atom:author/atom:name", ns)
+        if _clean(name_el.text)
+    ]
+
+    return {
+        "arxiv_id": arxiv_id,
+        "title": title,
+        "authors": authors,
+        "submitted_date": published,
+        "abs_url": abs_url,
+        "pdf_url": pdf_url,
+        "abstract": abstract,
+        "theme": theme,
+    }
+
+
 def scrape_arxiv(
     query: str,
     theme: Optional[str] = None,
@@ -85,40 +120,7 @@ def scrape_arxiv(
 
     items: List[Dict[str, Any]] = []
     for entry in root.findall("atom:entry", ns):
-        arxiv_id = _clean(entry.findtext("atom:id", default="", namespaces=ns)).split("/")[-1]
-        title = _clean(entry.findtext("atom:title", default="", namespaces=ns))
-        abstract = _clean(entry.findtext("atom:summary", default="", namespaces=ns))
-        published = _clean(entry.findtext("atom:published", default="", namespaces=ns))
-
-        abs_url = ""
-        pdf_url = ""
-        for link in entry.findall("atom:link", ns):
-            rel = link.attrib.get("rel", "")
-            href = link.attrib.get("href", "")
-            typ = link.attrib.get("type", "")
-            if rel == "alternate" and href:
-                abs_url = href
-            if typ == "application/pdf" and href:
-                pdf_url = href
-
-        authors = [
-            _clean(name_el.text)
-            for name_el in entry.findall("atom:author/atom:name", ns)
-            if _clean(name_el.text)
-        ]
-
-        items.append(
-            {
-                "arxiv_id": arxiv_id,
-                "title": title,
-                "authors": authors,
-                "submitted_date": published,
-                "abs_url": abs_url,
-                "pdf_url": pdf_url,
-                "abstract": abstract,
-                "theme": theme,
-            }
-        )
+        items.append(_parse_arxiv_entry(entry, ns, theme))
 
     # save raw
     ts = int(time.time())
