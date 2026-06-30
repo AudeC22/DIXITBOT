@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from app.core.ollama_client import OllamaClient
 from app.integrations import mcp
 from app.services.kb_service import search_kb
-from app.services.decision_service import should_scrape_arxiv
+from app.services.decision_service import should_scrape_arxiv, classify_intent
 from app.services.prompt_service import (
     build_kb_context,
     build_arxiv_context,
@@ -33,6 +33,30 @@ class AskRequest(BaseModel):
 
 @router.post("/ask")
 def ask(req: AskRequest) -> Dict[str, Any]:
+    client = OllamaClient()
+
+    try:
+        intent = classify_intent(client, req.question)
+    except Exception as e:
+        logger.error(f"classify_intent failed, falling back to metier: {e}")
+        intent = "metier"
+
+    if intent == "social":
+        try:
+            answer = client.generate(req.question, model=req.model)
+        except Exception as e:
+            logger.error(f"Ollama generate failed: {e}")
+            raise HTTPException(503, f"Service Ollama indisponible: {e}")
+        return {
+            "ok": True,
+            "answer": answer,
+            "intent": intent,
+            "used_arxiv": False,
+            "sources": [],
+            "kb_hits": 0,
+            "arxiv_hits": 0,
+        }
+
     try:
         kb_response = search_kb(req.question, req.kb_top_k, req.kb_min_score)
     except Exception as e:
@@ -66,7 +90,6 @@ def ask(req: AskRequest) -> Dict[str, Any]:
     prompt = build_strict_prompt(req.question, context)
 
     try:
-        client = OllamaClient()
         answer = client.generate(prompt, model=req.model)
     except Exception as e:
         logger.error(f"Ollama generate failed: {e}")
@@ -77,6 +100,7 @@ def ask(req: AskRequest) -> Dict[str, Any]:
     return {
         "ok": True,
         "answer": answer,
+        "intent": intent,
         "used_arxiv": used_arxiv,
         "sources": sources,
         "kb_hits": len(kb_results),
