@@ -111,7 +111,7 @@ function buildEmailBody() {
   const lines = [];
   lines.push("Historique de recherche — DIXIT BOT");
   lines.push("");
-  lines.push("Sources: arXiv + Semantic Scholar");
+  lines.push("Sources : arXiv");
   lines.push("");
   lines.push("— Conversation —");
   lines.push("");
