@@ -10,11 +10,16 @@ def classify_intent(client, question: str) -> str:
     system_prompt = (
         "Classify the user's question as exactly one of: social, metier. "
         "Reply with a single word: social or metier."
+        "\n\nExamples:"
+        "\nUser: Bonjour -> social"
+        "\nUser: Salut, merci ! -> social"
+        "\nUser: Articles sur les transformers -> metier"
+        "\nUser: Qu'est-ce que le deep learning ? -> metier"
     )
     response = client.generate(
         question,
         system=system_prompt,
         temperature=0.0,
-        num_predict=5,
+        num_predict=200,
     )
     return "social" if "social" in response.lower() else "metier"

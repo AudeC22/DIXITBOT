@@ -36,7 +36,8 @@ def _clean(s: Optional[str]) -> str:
 
 def _build_arxiv_query_url(query: str, theme: Optional[str], max_results: int, sort: str) -> str:
     cat = _THEME_TO_ARXIV_CAT.get(theme or "", None)
-    parts = [f'all:{urllib.parse.quote(query)}']
+    cleaned = query.translate(str.maketrans("", "", "?!:;"))
+    parts = [f'all:{urllib.parse.quote(cleaned)}']
     if cat:
         parts.append(f"cat:{cat}")
     search_query = "+AND+".join(parts)
