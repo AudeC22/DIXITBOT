@@ -49,6 +49,18 @@ def _build_arxiv_query_url(query: str, theme: Optional[str], max_results: int, s
     )
 
 
+def _fetch_arxiv_feed(url: str) -> ET.Element:
+    try:
+        r = requests.get(url, timeout=30)
+        r.raise_for_status()
+    except Exception as e:
+        raise RuntimeError(f"ARXIV_HTTP_ERROR: {e}") from e
+    try:
+        return ET.fromstring(r.text)
+    except Exception as e:
+        raise RuntimeError(f"ARXIV_XML_PARSE_ERROR: {e}") from e
+
+
 def scrape_arxiv(
     query: str,
     theme: Optional[str] = None,
@@ -65,16 +77,9 @@ def scrape_arxiv(
     url = _build_arxiv_query_url(q, theme, max_results, sort)
 
     try:
-        r = requests.get(url, timeout=30)
-        r.raise_for_status()
-    except Exception as e:
-        return {"ok": False, "errors": [f"ARXIV_HTTP_ERROR: {str(e)}"], "items": [], "last_search_url": url}
-
-    # parse atom xml
-    try:
-        root = ET.fromstring(r.text)
-    except Exception as e:
-        return {"ok": False, "errors": [f"ARXIV_XML_PARSE_ERROR: {str(e)}"], "items": [], "last_search_url": url}
+        root = _fetch_arxiv_feed(url)
+    except RuntimeError as e:
+        return {"ok": False, "errors": [str(e)], "items": [], "last_search_url": url}
 
     ns = {"atom": "http://www.w3.org/2005/Atom"}
 
