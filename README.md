@@ -1,402 +1,185 @@
 # DIXITBOT
 
-Création d'un chat IA BOT dans le cadre d'un Projet Epitech Groupe 34
+DIXITBOT est un agent conversationnel orienté revue de littérature scientifique. Le backend traite les questions utilisateur, enrichit la réponse à partir d'une base de connaissances locale et de sources arXiv, puis renvoie une synthèse structurée.
 
-# Vue d'ensemble du projet groupe 34
+## Vue d'ensemble
 
-# Objectif SMART DIXITBOT
+- Backend FastAPI
+- Frontend Vite
+- Modèle local Ollama
+- Scraping arXiv et indexation locale
+- API de question/réponse sur /api/ask
 
-Création en 7 jours par une équipe de 5 personnes d'un chatbot IA (DIXITBOT) dédié à l'analyse de publications scientifiques et génération de réponse . Le bot doit traiter les requêtes utilisateurs sur six domaines : IA/ML, Algo, Systèmes, Cybersécurité, Génie logiciel et Interaction de données .
+## Architecture
 
-# Contributeurs / équipe
+- Frontend : interface web simple en HTML/CSS/JavaScript
+- Backend : API REST Python avec FastAPI
+- IA locale : Ollama avec le modèle qwen3:1.7b
+- Intégrations : récupération de métadonnées arXiv et enrichissement de la réponse
+- Stockage : base de connaissances locale dans data_lake
 
-- Laetitia Zabbar
-- Imène Tabet
-- Luz mariel Vasquez
-- Aude Comte
-- Amine Marzak
+## Prérequis
 
-# 🤖 DIXITBOT — Agent conversationnel intelligent pour revue de littérature scientifique
-
-Ce projet est un **agent conversationnel intelligent** spécialisé dans la revue de littérature scientifique en informatique. Il permet de poser des questions sur des sujets scientifiques et utilise une base de connaissances (KB) enrichie par scraping automatique depuis ArXiv.
-
-Il repose sur une architecture moderne :
-
-- **Frontend** : Application web en HTML/CSS/JavaScript avec Vite
-- **Backend** : API REST en Python avec FastAPI
-- **IA locale** : Ollama avec modèle de langage open-source (par défaut qwen3:1.7b)
-- **Intégrations** : Scraping automatique d'articles scientifiques (ArXiv)
-- **Base de données** : Stockage local des connaissances extraites
-
----
-
-## 🧱 Architecture (vue d'ensemble)
-
-- **Frontend** : Interface utilisateur web simple et responsive
-- **Backend** : Python + FastAPI pour les API REST
-- **IA locale** : Ollama pour exécution de modèles LLM en local
-- **Scraping** : Intégrations pour récupérer des données depuis ArXiv
-- **Mémoire/KB** : Stockage et gestion d'une base de connaissances locale
-
-## Flux de fonctionnement
-
-1. L'utilisateur pose une question via l'interface web
-2. Le backend consulte la base de connaissances locale
-3. Si nécessaire, déclenchement du scraping pour enrichir la KB
-4. Analyse de la question par le modèle IA avec contexte
-5. Réponse structurée en français avec citations des sources
-
-## 🧩 Modules principaux
-
-### 1) Module MCP Scraping (arXiv)
-
-**Objectif** : Scraper des publications scientifiques depuis arXiv pour alimenter l'agent IA en données récentes et fiables.
-
-**Localisation** : `backend/app/integrations/mcp/`
-
-**Fonctionnalités** :
-
-- Scraping intelligent des pages arXiv (search/cs, pages abstracts, pages HTML)
-- Extraction structurée des métadonnées scientifiques
-- Exportation en JSON et HTML pour cache/debug
-- Intégration MCP (Model Context Protocol) avec les outils du backend
-
-**Données extraites** :
-
-_Depuis la page Search (search/cs)_ :
-
-- `arxiv_id` : identifiant arXiv unique
-- `title` : titre de la publication
-- `authors` : liste des auteurs
-- `abstract` : résumé de l'article
-- `submitted_date` : date de soumission
-- `abs_url`, `pdf_url` : URLs d'accès
-- `primary_category` : catégorie principale
-- `all_categories` : catégories associées
-
-_Depuis la page /abs_ :
-
-- `doi` : Digital Object Identifier (si disponible)
-- `versions` : historique des versions
-- `last_updated_raw` : dernière mise à jour
-- `abstract` : résumé enrichi (fallback)
-- Lien vers la version `/html`
-
-_Depuis la page /html_ :
-
-- `method` : section Méthodologie/Approche
-- `references` : bibliographie complète
-
-**Fichier principal** : `backend/app/integrations/mcp/tools.py`
-
-**Utilisation** :
-
-- L'agent déclenche le scraper via MCP lorsqu'une requête nécessite une recherche arXiv
-- Les résultats sont stockés en cache dans `data_lake/raw/`
-- Les données enrichies alimentent la réponse de l'agent
-
----
-
-### 2) Module Email (Mailpit, remplaçant local de MailHog, abandonné depuis 2020)
-
-**Objectif** : Envoyer l'historique des conversations par email (démo, test, archivage).
-
-**Localisation** : Module intégré dans les routes API
-
-**Fonctionnalités** :
-
-- Envoi d'emails SMTP via Mailpit (remplaçant local de MailHog, abandonné depuis 2020)
-- Formatage HTML + texte brut de l'historique de conversation
-- Configuration SMTP centralisée
-- Intégration API FastAPI
-
-**Configuration** :
-
-- **SMTP local** : `127.0.0.1:1025`
-- **UI Mailpit** : `http://127.0.0.1:8025`
-
-**Format de la requête** :
-
-```json
-{
-  "recipient_email": "user@example.com",
-  "conversation_history": [
-    {
-      "role": "user",
-      "content": "Bonjour",
-      "timestamp": "2026-01-15T13:15:00"
-    },
-    {
-      "role": "assistant",
-      "content": "Salut",
-      "timestamp": "2026-01-15T13:15:05"
-    }
-  ],
-  "subject": "Historique conversation DIXITBOT"
-}
-```
-
-**Stockage** : Les historiques sont conservés en JSON dans `data_lake/raw/conversation_history/`
-
----
-
-```
-DIXITBOT/
-├── README.md                 # Ce fichier
-├── requirements.txt          # Dépendances Python
-├── backend/                  # Code backend Python
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── main.py           # Point d'entrée FastAPI
-│   │   ├── api/
-│   │   │   └── routes/       # Routes API (ask, health, scrape, email)
-│   │   ├── core/             # Noyau IA
-│   │   │   └── ollama_client.py  # Client HTTP pour Ollama
-│   │   ├── integrations/     # Intégrations externes
-│   │   │   └── mcp/          # Module d'outils MCP
-│   │   │       ├── __init__.py
-│   │   │       ├── registry.py    # run_tool, AVAILABLE_TOOLS
-│   │   │       ├── schemas.py
-│   │   │       ├── tools.py
-│   │   │       └── _validate.py   # Script de validation manuelle
-│   │   └── services/         # Services métier
-│   └── data_lake/            # Stockage des données
-│       ├── kb.json           # Base de connaissances JSON
-│       ├── KB/               # Dossier connaissances
-│       ├── processed/        # Données traitées
-│       └── raw/              # Données brutes scrapées
-├── frontend/                # Interface web
-│   ├── index.html
-│   ├── app.js
-│   ├── style.css
-│   └── package.json
-└── Docs/                    # Documentation
-```
-
-## Technologies utilisées
-
-- FastAPI
-- Ollama (avec modèle qwen3:1.7b)
-- Mailpit (remplaçant local de MailHog, abandonné depuis 2020) (pour les emails)
-- HTML/CSS/JS (frontend)
-- MCP-like tools (scraping)
-- Python 3.10+
-
-## 📚 Dépendances Python (modules utilisés)
-
-### 🌐 Frameworks Web & API
-
-| Module     | Version | Utilité                            |
-| ---------- | ------- | ---------------------------------- |
-| `fastapi`           | ≥0.100  | Framework API REST pour le backend        |
-| `uvicorn`           | ≥0.23   | Serveur ASGI pour FastAPI                 |
-| `pydantic`          | ≥2.0    | Validation schémas + types stricts        |
-| `python-multipart`  | ≥0.0.6  | Parsing des formulaires multipart         |
-
-### 🔗 Requêtes HTTP & Communication
-
-| Module     | Version | Utilité                        |
-| ---------- | ------- | ------------------------------ |
-| `requests` | ≥2.31   | Requêtes HTTP (scraping arXiv) |
-
-
-### 💾 Stockage & Sérialisation
-
-| Module    | Version    | Utilité                              |
-| --------- | ---------- | ------------------------------------ |
-| `json`    | ✅ builtin | Sérialisation JSON (cache, exports)  |
-| `pickle`  | ✅ builtin | Sérialisation Python (cache mémoire) |
-| `sqlite3` | ✅ builtin | Base données locale (historique)     |
-
-### 📧 Gestion Emails
-
-| Module        | Version    | Utilité                        |
-| ------------- | ---------- | ------------------------------ |
-| `smtplib`     | ✅ builtin | Envoi SMTP (emails via Mailpit) |
-| `email.mime`  | ✅ builtin | Construction emails HTML/texte |
-| `email.utils` | ✅ builtin | Formatage headers SMTP         |
-
-
-### 📊 Utilitaires & Outils
-
-| Module     | Version    | Utilité                                 |
-| ---------- | ---------- | --------------------------------------- |
-| `os`       | ✅ builtin | Chemins fichiers / env variables        |
-| `sys`      | ✅ builtin | Configuration système                   |
-| `re`       | ✅ builtin | Regex (parsing catégories arXiv)        |
-| `time`     | ✅ builtin | Pauses politenesses (scraping)          |
-| `datetime` | ✅ builtin | Timestamps fichiers / conversations     |
-| `random`   | ✅ builtin | Jitter timeouts (anti-pattern arXiv)    |
-| `pathlib`  | ✅ builtin | Gestion chemins (cross-platform)        |
-| `typing`   | ✅ builtin | Type hints (Dict, List, Optional, etc.) |
-| `logging`  | ✅ builtin | Logs debug / erreurs                    |
-
-
----
-
-### 1️⃣ Prérequis
-
-- Windows 10 ou 11
-- Python 3.10 ou plus
-- Node.js 16+ (pour le frontend)
+- Python 3.11+
+- Node.js
 - Git
-- Connexion Internet
+- Ollama installé
 
-### 2️⃣ Installer Ollama
+## Installation
 
-Ollama permet d'exécuter des modèles de langage en local.
-
-👉 Télécharger et installer Ollama pour Windows :  
-https://ollama.com/download/windows
-
-Après installation, vérifier :
-
-```bash
-ollama --version
-```
-
-Puis télécharger le modèle par défaut (qwen3:1.7b) :
-
-```bash
-ollama pull qwen3:1.7b
-```
-
-### 3️⃣ Installer les dépendances Python
+Depuis la racine du projet :
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4️⃣ Installer les dépendances frontend
+Installation du frontend :
 
 ```bash
 cd frontend
 npm install
+cd ..
 ```
 
-### 5️⃣ Installer Mailpit (remplaçant local de MailHog, abandonné depuis 2020)
-
-Mailpit (remplaçant local de MailHog, abandonné depuis 2020) sert de boîte mail locale pour tester l'envoi d'emails.
-
-**Installation** : `brew install mailpit`
-
-**Lancement** :
+Téléchargement du modèle Ollama :
 
 ```bash
-mailpit
+ollama pull qwen3:1.7b
 ```
 
-**Interface web Mailpit** : http://127.0.0.1:8025
+## Lancement sous Windows
 
-**Ports utilisés** :
-
-- SMTP : `1025`
-- UI : `8025`
-
-## 🚀 Lancement
-
-### 1️⃣ Lancer Mailpit
-
-Dans un terminal :
+### 1. Vérification d'Ollama
 
 ```bash
-mailpit
+ollama list
 ```
 
-### 2️⃣ Lancer Ollama
+Le modèle qwen3:1.7b doit apparaître.
 
-Dans un autre terminal :
+Si Ollama est déjà lancé, l'instruction suivante ne doit pas être utilisée :
 
 ```bash
 ollama serve
 ```
 
-Le serveur Ollama démarre sur http://127.0.0.1:11434
+### 2. Lancer le backend
 
-### 3️⃣ Lancer le backend
-
-Dans un troisième terminal, depuis la racine du projet :
+Depuis la racine du projet :
 
 ```bash
 cd backend
 python -m app.main
 ```
 
-L'API FastAPI sera disponible sur http://127.0.0.1:51234
+Le backend est disponible sur :
 
-### 4️⃣ Lancer le frontend
+```text
+http://127.0.0.1:51234
+```
 
-Dans un quatrième terminal :
+La documentation Swagger est disponible sur :
+
+```text
+http://127.0.0.1:51234/docs
+```
+
+### 3. Lancer le frontend
+
+Dans un nouveau terminal :
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-L'interface web sera accessible sur http://localhost:5173 (ou le port indiqué par Vite)
+Le frontend est disponible sur :
 
-## 📍 Ports utilisés (récapitulatif)
+```text
+http://localhost:5173
+```
 
-| Service         | URL/Port                   |
-| --------------- | -------------------------- |
-| Backend FastAPI | http://127.0.0.1:51234      |
-| Swagger UI      | http://127.0.0.1:51234/docs |
-| Frontend        | http://localhost:5173      |
-| Mailpit SMTP    | 127.0.0.1:1025             |
-| Mailpit UI      | http://127.0.0.1:8025      |
-| Ollama API      | http://127.0.0.1:11434     |
+## Utilisation de l'API
 
-## ✅ Tests rapides
+Endpoint principal :
 
-### Test de l'envoi d'email via Swagger
+```text
+POST /api/ask
+```
 
-1. Ouvrir : http://127.0.0.1:51234/docs
-2. Localiser l'endpoint : `POST /send-email`
-3. Cliquer sur "Try it out"
-4. Remplir le corps JSON :
+Exemple de requête :
 
 ```json
 {
-  "recipient_email": "test@example.com",
-  "conversation_history": [
-    {
-      "role": "user",
-      "content": "Bonjour, quels sont les derniers progrès en IA/ML ?",
-      "timestamp": "2026-01-15T13:15:00"
-    },
-    {
-      "role": "assistant",
-      "content": "Les derniers progrès concernent les transformers et les modèles de diffusion...",
-      "timestamp": "2026-01-15T13:15:05"
-    }
-  ],
-  "subject": "Historique de ma conversation avec DIXITBOT"
+  "question": "Transformer models for medical imaging"
 }
 ```
 
-5. Vérifier l'email dans Mailpit : http://127.0.0.1:8025
+La réponse contient généralement :
+
+- un texte de synthèse
+- les sources issues de la base de connaissances
+- les sources issues d'arXiv lorsque des résultats sont disponibles
+
+## Tests rapides
+
+1. Lancer le backend.
+2. Ouvrir la documentation Swagger sur http://127.0.0.1:51234/docs.
+3. Tester l'endpoint POST /api/ask avec une requête précise.
+4. Vérifier un statut HTTP 200 et une réponse structurée.
+
+## Limites connues
+
+### Modèle LLM
+
+Le comportement dépend du modèle local Ollama et des données disponibles. Des limites possibles incluent :
+
+- hallucinations
+- perte de cohérence sur des échanges très longs
+- réponses approximatives si le contexte est insuffisant
+
+### arXiv
+
+Les requêtes arXiv peuvent temporairement échouer avec un code HTTP 429. Les causes fréquentes sont :
+
+- un volume trop important de requêtes
+- une requête trop générale
+- une limitation temporaire liée à l'adresse IP
+
+Les requêtes plus spécifiques produisent généralement de meilleurs résultats.
+
+## Structure du projet
+
+```text
+DIXITBOT/
+├── README.md
+├── requirements.txt
+├── backend/
+│   └── app/
+│       ├── api/
+│       ├── core/
+│       ├── integrations/
+│       └── services/
+├── frontend/
+│   ├── index.html
+│   ├── app.js
+│   ├── style.css
+│   └── package.json
+└── data_lake/
+```
+
+## Notes techniques
+
+- Le frontend envoie les questions vers /api/ask.
+- Le backend peut utiliser la base de connaissances locale ainsi que des métadonnées arXiv.
+- Le scraping utilise l'API ArXiv Atom, pas un navigateur HTML.
+- Le scraping extrait des métadonnées et des abstracts et stocke le résultat en JSON.
+- Les requêtes ne sont pas normalisées au-delà d'un petit nettoyage de ponctuation.
+- Il n'existe pas de post-traitement de citation ni de recherche sémantique dans le code actuel.
+- Une route d'email est exposée sur `/api/send-email`.
+- L'envoi d'email utilise `smtplib` vers un SMTP local (`127.0.0.1:1025` par défaut).
+- Le contenu envoyé est généré en HTML et une copie JSON de l'historique est sauvegardée dans `data_lake/raw/conversation_history/`.
 
 ---
 
-## 💡 Utilisation
-
-- **data_lake/raw/** : Contient les données scrapées brutes (HTML/JSON d'ArXiv)
-- **data_lake/processed/** : Données traitées et nettoyées
-- **data_lake/kb.json** : Base de connaissances consolidée
-
-## 🔧 Configuration
-
-- Modèle Ollama : Configurable via variable d'environnement `OLLAMA_MODEL` (défaut: qwen3:1.7b)
-- Port Ollama : `OLLAMA_BASE_URL` (défaut: http://127.0.0.1:11434)
-- Timeout et rate limiting : Ajustables dans `ollama_client.py`
-
-## 📝 Notes de développement
-
-- Le projet utilise une architecture modulaire pour faciliter l'extension
-- Les prompts sont en français pour des réponses localisées
-- Le scraping respecte les conditions d'utilisation des sites sources
-- Toutes les dépendances sont listées dans requirements.txt
-
----
-
-Développé pour le projet IA BOT - Epitech Groupe 34
+Projet IA BOT — Epitech Groupe 34
