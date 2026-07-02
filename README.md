@@ -180,6 +180,9 @@ DIXITBOT/
 - L'envoi d'email utilise `smtplib` vers un SMTP local (`127.0.0.1:1025` par défaut).
 - Le contenu envoyé est généré en HTML et une copie JSON de l'historique est sauvegardée dans `data_lake/raw/conversation_history/`.
 
+
+Les prompt doivent être simple, un thème générique ou un titre en particulier comme : "Transformer models for medical imaging" et "Natural Language Processing" et "Deep Learning" et "Diffusion Models" ...
+
 ---
 
 Projet IA BOT — Epitech Groupe 34
